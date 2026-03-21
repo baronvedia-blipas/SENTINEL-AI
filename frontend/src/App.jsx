@@ -4,8 +4,12 @@ import TxAnalyzer from "./components/TxAnalyzer.jsx";
 import AgentGuard from "./components/AgentGuard.jsx";
 import AuditLog from "./components/AuditLog.jsx";
 import DemoRunner from "./components/DemoRunner.jsx";
+import useWallet from "./hooks/useWallet.js";
 
 const API = "/api";
+
+// Agent address (the deployer/owner of Sentinel)
+const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
 
 const TABS = [
   { id: "demo", label: "Live Demo", icon: "🎬" },
@@ -20,6 +24,9 @@ export default function App() {
   const [agentInfo, setAgentInfo] = useState(null);
   const [reputation, setReputation] = useState(null);
   const [health, setHealth] = useState(null);
+
+  const wallet = useWallet();
+  const isOwner = wallet.address?.toLowerCase() === AGENT_ADDRESS.toLowerCase();
 
   const refreshAll = () => {
     fetch(`${API}/agent/identity`).then(r => r.json()).then(setAgentInfo).catch(() => {});
@@ -91,9 +98,60 @@ export default function App() {
               <span className="w-2 h-2 rounded-full bg-red-400 pulse-dot" />
               <span className="text-red-300">Fuji</span>
             </div>
+
+            {/* Wallet Connection */}
+            {wallet.address ? (
+              <button
+                onClick={wallet.disconnect}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm transition-colors bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]"
+              >
+                <span className="text-lg">🦊</span>
+                <div className="text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-mono text-xs text-[var(--text-primary)]">
+                      {wallet.shortAddress}
+                    </span>
+                    {isOwner && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        OWNER
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">
+                    {wallet.isOnFuji ? "Fuji C-Chain" : "Wrong Network"}
+                  </div>
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={wallet.connect}
+                disabled={wallet.isConnecting || !wallet.hasMetaMask}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 disabled:opacity-50 text-sm font-medium text-white transition-all shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
+              >
+                <span className="text-lg">🦊</span>
+                {wallet.isConnecting ? "Connecting..." : !wallet.hasMetaMask ? "Install MetaMask" : "Connect Wallet"}
+              </button>
+            )}
           </div>
         </div>
       </header>
+
+      {/* Wrong network banner */}
+      {wallet.address && !wallet.isOnFuji && (
+        <div className="bg-yellow-500/10 border-b border-yellow-500/30 px-6 py-2">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <span className="text-sm text-yellow-300">
+              Wrong network detected. Please switch to Avalanche Fuji Testnet.
+            </span>
+            <button
+              onClick={wallet.connect}
+              className="text-xs px-3 py-1 rounded bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 transition-colors"
+            >
+              Switch to Fuji
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Tabs */}
       <nav className="border-b border-[var(--border-color)] px-6">
