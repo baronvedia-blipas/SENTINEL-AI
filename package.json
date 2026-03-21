@@ -1,0 +1,30 @@
+{
+  "name": "sentinel-ai",
+  "version": "1.0.0",
+  "description": "Sentinel AI — Autonomous security agent for Web3 on Avalanche",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:fuji": "hardhat run scripts/deploy.js --network fuji",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "node": "hardhat node",
+    "backend": "cd backend && node index.js",
+    "frontend": "cd frontend && npm run dev",
+    "test": "hardhat test"
+  },
+  "keywords": [
+    "avalanche",
+    "erc-8004",
+    "security",
+    "ai-agent"
+  ],
+  "author": "Sentinel AI Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
+    "@openzeppelin/contracts": "^5.6.1",
+    "dotenv": "^17.3.1",
+    "hardhat": "^2.28.6"
+  }
+}
