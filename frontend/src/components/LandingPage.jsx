@@ -262,8 +262,13 @@ export default function LandingPage({ onEnter, lang = "es" }) {
             ))}
           </div>
 
+          {/* CTA button */}
+          <button onClick={onEnter} className="btn-primary px-10 py-3.5 rounded-lg text-base font-mono tracking-wider">
+            {t(lang, "enterApp")} →
+          </button>
+
           {/* Scroll indicator */}
-          <div className="pt-8 text-[var(--text-secondary)] text-xs font-mono animate-bounce">
+          <div className="pt-4 text-[var(--text-secondary)] text-xs font-mono animate-bounce">
             ▼ scroll
           </div>
         </section>
