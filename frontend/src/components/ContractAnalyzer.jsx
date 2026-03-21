@@ -108,7 +108,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
       <div className="space-y-4">
         {error && (
           <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
-            Error: {error}
+            {t(lang, "error")}: {error}
           </div>
         )}
 
@@ -168,7 +168,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
                     </span>
                   ) : result.aiExplanation._provider === "fallback" ? (
                     <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
-                      rule-based
+                      {t(lang, "ruleBased")}
                     </span>
                   ) : null}
                 </h3>

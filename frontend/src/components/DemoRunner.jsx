@@ -4,8 +4,8 @@ import { t } from "../i18n.js";
 const DEMO_STEPS = [
   {
     id: 1,
-    title: "Analyze Vulnerable Contract",
-    description: "Sentinel detects reentrancy vulnerability in a Solidity contract",
+    titleKey: "demoStep1Title",
+    descKey: "demoStep1Desc",
     icon: "📝",
     endpoint: "/api/analyze/contract",
     method: "POST",
@@ -35,8 +35,8 @@ contract VulnerableBank {
   },
   {
     id: 2,
-    title: "Block Unlimited Approval",
-    description: "An AI agent tries to approve unlimited tokens — Sentinel blocks it",
+    titleKey: "demoStep2Title",
+    descKey: "demoStep2Desc",
     icon: "🚫",
     endpoint: "/api/agent/evaluate",
     method: "POST",
@@ -52,8 +52,8 @@ contract VulnerableBank {
   },
   {
     id: 3,
-    title: "Allow Safe Transfer",
-    description: "A safe 10 USDC transfer — Sentinel approves it",
+    titleKey: "demoStep3Title",
+    descKey: "demoStep3Desc",
     icon: "✅",
     endpoint: "/api/agent/evaluate",
     method: "POST",
@@ -170,7 +170,7 @@ export default function DemoRunner({ onComplete, lang = "es" }) {
               {/* Step header */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">{step.icon}</span>
-                <span className="text-xs text-[var(--text-secondary)]">Step {step.id}</span>
+                <span className="text-xs text-[var(--text-secondary)]">{t(lang, "step")} {step.id}</span>
                 {isActive && (
                   <svg className="animate-spin h-4 w-4 text-blue-400 ml-auto" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
@@ -179,8 +179,8 @@ export default function DemoRunner({ onComplete, lang = "es" }) {
                 )}
               </div>
 
-              <h3 className="font-semibold text-sm mb-1">{step.title}</h3>
-              <p className="text-xs text-[var(--text-secondary)] mb-3">{step.description}</p>
+              <h3 className="font-semibold text-sm mb-1">{t(lang, step.titleKey)}</h3>
+              <p className="text-xs text-[var(--text-secondary)] mb-3">{t(lang, step.descKey)}</p>
 
               {/* Result */}
               {isDone && result.success && (
@@ -228,29 +228,28 @@ export default function DemoRunner({ onComplete, lang = "es" }) {
       {results.length === DEMO_STEPS.length && (
         <div className="text-center p-6 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)]">
           <div className="text-4xl mb-3">🛡️</div>
-          <h3 className="text-lg font-bold mb-2">Demo Complete</h3>
+          <h3 className="text-lg font-bold mb-2">{t(lang, "demoComplete")}</h3>
           <p className="text-sm text-[var(--text-secondary)] mb-4">
-            All {DEMO_STEPS.length} actions analyzed and logged on Avalanche Fuji.
-            Check the Audit Log tab to see the full on-chain history.
+            {DEMO_STEPS.length} {t(lang, "demoAllActions")} {t(lang, "checkAuditLog")}
           </p>
           <div className="flex justify-center gap-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-red-400">
                 {results.filter(r => r.data?.decision === "BLOCK" || r.data?.riskLevel === "HIGH").length}
               </div>
-              <div className="text-xs text-[var(--text-secondary)]">Threats Blocked</div>
+              <div className="text-xs text-[var(--text-secondary)]">{t(lang, "threatsBlocked")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400">
                 {results.filter(r => r.data?.decision === "ALLOW" || (r.data?.riskLevel === "LOW" && !r.data?.decision)).length}
               </div>
-              <div className="text-xs text-[var(--text-secondary)]">Safe Actions</div>
+              <div className="text-xs text-[var(--text-secondary)]">{t(lang, "safeActions")}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-400">
                 {results.filter(r => r.data?.onChain).length}
               </div>
-              <div className="text-xs text-[var(--text-secondary)]">On-Chain TXs</div>
+              <div className="text-xs text-[var(--text-secondary)]">{t(lang, "onChainTxs")}</div>
             </div>
           </div>
         </div>

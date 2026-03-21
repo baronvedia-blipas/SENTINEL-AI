@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import SentinelLogo from "./SentinelLogo.jsx";
+import { t } from "../i18n.js";
 
-export default function AgentProfile() {
+export default function AgentProfile({ lang = "es" }) {
   const [agent, setAgent] = useState(null);
   const [reputation, setReputation] = useState(null);
   const [entries, setEntries] = useState([]);
@@ -19,7 +20,7 @@ export default function AgentProfile() {
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-center py-12 text-[var(--text-secondary)]">Loading agent profile...</div>;
+  if (loading) return <div className="text-center py-12 text-[var(--text-secondary)]">{t(lang, "loadingProfile")}</div>;
 
   const blockedCount = entries.filter(e => e.decision === "BLOCK").length;
   const allowedCount = entries.filter(e => e.decision === "ALLOW").length;
@@ -71,11 +72,11 @@ export default function AgentProfile() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
-          { label: "Reputation Score", value: reputation?.score || 0, color: "text-green-400", icon: "⭐" },
-          { label: "Total Decisions", value: reputation?.totalDecisions || 0, color: "text-white", icon: "📊" },
-          { label: "Threats Blocked", value: reputation?.blockedThreats || 0, color: "text-red-400", icon: "🚫" },
-          { label: "Safe Actions", value: reputation?.allowedSafe || 0, color: "text-blue-400", icon: "✅" },
-          { label: "Detection Rate", value: `${accuracy}%`, color: "text-yellow-400", icon: "🎯" },
+          { label: t(lang, "reputationScore"), value: reputation?.score || 0, color: "text-green-400", icon: "⭐" },
+          { label: t(lang, "totalDecisions"), value: reputation?.totalDecisions || 0, color: "text-white", icon: "📊" },
+          { label: t(lang, "threatsBlockedStat"), value: reputation?.blockedThreats || 0, color: "text-red-400", icon: "🚫" },
+          { label: t(lang, "safeActionsStat"), value: reputation?.allowedSafe || 0, color: "text-blue-400", icon: "✅" },
+          { label: t(lang, "detectionRate"), value: `${accuracy}%`, color: "text-yellow-400", icon: "🎯" },
         ].map((stat) => (
           <div key={stat.label} className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-center card-glow">
             <div className="text-2xl mb-1">{stat.icon}</div>
@@ -90,22 +91,22 @@ export default function AgentProfile() {
         <a href="https://testnet.snowtrace.io/address/0x24aB78183Cc27649bC8afD07D8b949b2F914eF59#code"
           target="_blank" rel="noopener noreferrer"
           className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--bg-card-hover)] transition-colors card-glow">
-          <h3 className="font-semibold text-sm mb-1">SentinelGuard Contract</h3>
-          <p className="text-xs text-[var(--text-secondary)]">Audit log, decisions, encrypted reports</p>
+          <h3 className="font-semibold text-sm mb-1">{t(lang, "guardContract")}</h3>
+          <p className="text-xs text-[var(--text-secondary)]">{t(lang, "guardContractDesc")}</p>
           <span className="text-xs text-blue-400 font-mono mt-2 block">0x24aB78...eF59</span>
         </a>
         <a href="https://testnet.snowtrace.io/address/0xf9AbfD966521BE7F0950823A635305BcEd56b68A#code"
           target="_blank" rel="noopener noreferrer"
           className="p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--bg-card-hover)] transition-colors card-glow">
-          <h3 className="font-semibold text-sm mb-1">SentinelERC8004 Registry</h3>
-          <p className="text-xs text-[var(--text-secondary)]">Agent identity, capabilities, reputation</p>
+          <h3 className="font-semibold text-sm mb-1">{t(lang, "registryContract")}</h3>
+          <p className="text-xs text-[var(--text-secondary)]">{t(lang, "registryContractDesc")}</p>
           <span className="text-xs text-blue-400 font-mono mt-2 block">0xf9AbfD...b68A</span>
         </a>
       </div>
 
       {/* Recent Activity */}
       <div>
-        <h3 className="font-semibold text-sm mb-3">Recent Activity</h3>
+        <h3 className="font-semibold text-sm mb-3">{t(lang, "recentActivity")}</h3>
         <div className="space-y-2">
           {entries.slice(0, 10).map((entry, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)]">

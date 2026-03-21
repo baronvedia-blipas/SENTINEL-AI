@@ -189,8 +189,8 @@ export default function App() {
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
-          {activeTab === "profile" && <AgentProfile />}
-          {activeTab === "log" && <AuditLog />}
+          {activeTab === "profile" && <AgentProfile lang={lang} />}
+          {activeTab === "log" && <AuditLog lang={lang} />}
         </div>
       </main>
 

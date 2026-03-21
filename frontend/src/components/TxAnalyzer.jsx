@@ -3,7 +3,7 @@ import { t } from "../i18n.js";
 
 const PRESETS = [
   {
-    label: "Unlimited Approve",
+    labelKey: "unlimitedApprovePreset",
     data: {
       type: "approve",
       amount: "115792089237316195423570985008687907853269984665640564039457584007913129639935",
@@ -12,7 +12,7 @@ const PRESETS = [
     },
   },
   {
-    label: "High-Value Transfer",
+    labelKey: "highValueTransfer",
     data: {
       type: "transfer",
       amount: "500",
@@ -22,7 +22,7 @@ const PRESETS = [
     },
   },
   {
-    label: "Safe Transfer",
+    labelKey: "safeTransferPreset",
     data: {
       type: "transfer",
       amount: "10",
@@ -89,7 +89,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
               onClick={() => loadPreset(preset)}
               className="text-xs px-3 py-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--bg-card-hover)] transition-colors"
             >
-              {preset.label}
+              {t(lang, preset.labelKey)}
             </button>
           ))}
         </div>
@@ -103,9 +103,9 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
               onChange={(e) => setTxData({ ...txData, type: e.target.value })}
               className="w-full p-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm focus:outline-none focus:border-blue-500/50"
             >
-              <option value="approve">Approve</option>
-              <option value="transfer">Transfer</option>
-              <option value="swap">Swap</option>
+              <option value="approve">{t(lang, "approve")}</option>
+              <option value="transfer">{t(lang, "transfer")}</option>
+              <option value="swap">{t(lang, "swap")}</option>
             </select>
           </div>
 
@@ -174,7 +174,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
       <div className="space-y-4">
         {result?.error && (
           <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
-            Error: {result.error}
+            {t(lang, "error")}: {result.error}
           </div>
         )}
 
@@ -203,14 +203,14 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
             {result.aiExplanation && (
               <div className="p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)]">
                 <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <span>🤖</span> AI Explanation
+                  <span>🤖</span> {t(lang, "aiAnalysis")}
                   {result.aiExplanation._provider && result.aiExplanation._provider !== "fallback" ? (
                     <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/15 text-green-400 border border-green-500/20">
                       {result.aiExplanation._provider}
                     </span>
                   ) : result.aiExplanation._provider === "fallback" ? (
                     <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
-                      rule-based
+                      {t(lang, "ruleBased")}
                     </span>
                   ) : null}
                 </h3>
@@ -220,7 +220,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
 
             {result.onChain && (
               <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <h3 className="font-semibold text-sm mb-1 text-green-300">On-Chain Record</h3>
+                <h3 className="font-semibold text-sm mb-1 text-green-300">{t(lang, "onChainRecord")}</h3>
                 <a href={result.onChain.explorerUrl} target="_blank" rel="noopener noreferrer"
                   className="text-blue-400 hover:underline font-mono text-xs">
                   {result.onChain.txHash}

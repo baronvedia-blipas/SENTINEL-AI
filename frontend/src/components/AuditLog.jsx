@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { t } from "../i18n.js";
 
-export default function AuditLog() {
+export default function AuditLog({ lang = "es" }) {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [agentInfo, setAgentInfo] = useState(null);
@@ -47,12 +48,12 @@ export default function AuditLog() {
       {newEntry && (
         <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 animate-pop flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-white pulse-dot" />
-          New decision logged on-chain!
+          {t(lang, "newDecision")}
         </div>
       )}
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">On-Chain Audit Log</h2>
+        <h2 className="text-lg font-semibold">{t(lang, "auditTitle")}</h2>
         <div className="flex items-center gap-3">
           <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)] cursor-pointer">
             <input
@@ -61,11 +62,11 @@ export default function AuditLog() {
               onChange={(e) => setAutoRefresh(e.target.checked)}
               className="rounded"
             />
-            Auto-refresh (5s)
+            {t(lang, "autoRefresh")}
           </label>
           <button onClick={refresh}
             className="text-xs px-3 py-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--bg-card-hover)] transition-colors">
-            Refresh
+            {t(lang, "refresh")}
           </button>
         </div>
       </div>
@@ -78,7 +79,7 @@ export default function AuditLog() {
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="font-bold text-lg">{agentInfo.name}</h3>
                 {agentInfo.active && (
-                  <span className="px-2 py-0.5 rounded text-xs bg-green-500/15 text-green-400 border border-green-500/20">Active</span>
+                  <span className="px-2 py-0.5 rounded text-xs bg-green-500/15 text-green-400 border border-green-500/20">{t(lang, "active")}</span>
                 )}
               </div>
               <p className="text-sm text-[var(--text-secondary)] max-w-xl">{agentInfo.description}</p>
@@ -113,11 +114,11 @@ export default function AuditLog() {
 
       {/* Log entries */}
       {loading ? (
-        <div className="text-center py-8 text-[var(--text-secondary)]">Loading on-chain data...</div>
+        <div className="text-center py-8 text-[var(--text-secondary)]">{t(lang, "loadingOnChain")}</div>
       ) : entries.length === 0 ? (
         <div className="text-center py-8 text-[var(--text-secondary)]">
           <div className="text-4xl mb-3">📋</div>
-          <p>No audit entries yet.</p>
+          <p>{t(lang, "noEntries")}</p>
         </div>
       ) : (
         <div className="space-y-2">

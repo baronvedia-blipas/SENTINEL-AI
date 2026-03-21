@@ -112,6 +112,30 @@ const translations = {
     notSolidityHint2: "y contenga",
     notSolidityEtc: "etc.",
 
+    // TX Analyzer presets & options
+    unlimitedApprovePreset: "Approve Ilimitado",
+    highValueTransfer: "Transferencia de Alto Valor",
+    safeTransferPreset: "Transferencia Segura",
+    approve: "Aprobar",
+    transfer: "Transferir",
+    swap: "Intercambiar",
+    error: "Error",
+    ruleBased: "basado en reglas",
+
+    // Audit Log
+    active: "Activo",
+    loadingOnChain: "Cargando datos on-chain...",
+
+    // Agent Profile
+    loadingProfile: "Cargando perfil del agente...",
+    guardContract: "Contrato SentinelGuard",
+    guardContractDesc: "Registro de auditoría, decisiones, reportes encriptados",
+    registryContract: "Registro SentinelERC8004",
+    registryContractDesc: "Identidad del agente, capacidades, reputación",
+
+    // Demo results
+    checkAuditLog: "Revisa la pestaña Registro de Auditoría para ver el historial completo on-chain.",
+
     // Placeholders
     emptyContract: "Pega un contrato Solidity y haz click en",
     emptyContractHint: "o haz click en \"Cargar Ejemplo\" para probar con un contrato vulnerable",
@@ -199,6 +223,26 @@ const translations = {
     safeActionsStat: "Safe Actions",
     detectionRate: "Detection Rate",
     recentActivity: "Recent Activity",
+
+    unlimitedApprovePreset: "Unlimited Approve",
+    highValueTransfer: "High-Value Transfer",
+    safeTransferPreset: "Safe Transfer",
+    approve: "Approve",
+    transfer: "Transfer",
+    swap: "Swap",
+    error: "Error",
+    ruleBased: "rule-based",
+
+    active: "Active",
+    loadingOnChain: "Loading on-chain data...",
+
+    loadingProfile: "Loading agent profile...",
+    guardContract: "SentinelGuard Contract",
+    guardContractDesc: "Audit log, decisions, encrypted reports",
+    registryContract: "SentinelERC8004 Registry",
+    registryContractDesc: "Agent identity, capabilities, reputation",
+
+    checkAuditLog: "Check the Audit Log tab to see the full on-chain history.",
 
     landingSubtitle: "Autonomous Security Agent for Web3",
     landingDesc: "Analyzes smart contracts and transactions before execution. Blocks risky actions. Builds on-chain reputation from every correct decision.",
