@@ -1,4 +1,5 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomicfoundation/hardhat-verify");
 require("dotenv").config();
 
 const FUJI_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY || "0x" + "0".repeat(64);
@@ -21,6 +22,11 @@ module.exports = {
     },
     localhost: {
       url: "http://127.0.0.1:8545",
+    },
+  },
+  etherscan: {
+    apiKey: {
+      avalancheFujiTestnet: "snowtrace", // Snowtrace doesn't require a real API key
     },
   },
   paths: {

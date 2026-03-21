@@ -3,10 +3,12 @@ import ContractAnalyzer from "./components/ContractAnalyzer.jsx";
 import TxAnalyzer from "./components/TxAnalyzer.jsx";
 import AgentGuard from "./components/AgentGuard.jsx";
 import AuditLog from "./components/AuditLog.jsx";
+import DemoRunner from "./components/DemoRunner.jsx";
 
 const API = "/api";
 
 const TABS = [
+  { id: "demo", label: "Live Demo", icon: "🎬" },
   { id: "contract", label: "Contract Analyzer", icon: "📝" },
   { id: "transaction", label: "TX Risk Analyzer", icon: "💸" },
   { id: "agent", label: "Agent Guard", icon: "🤖" },
@@ -14,18 +16,18 @@ const TABS = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("contract");
+  const [activeTab, setActiveTab] = useState("demo");
   const [agentInfo, setAgentInfo] = useState(null);
   const [reputation, setReputation] = useState(null);
+  const [health, setHealth] = useState(null);
 
-  useEffect(() => {
+  const refreshAll = () => {
     fetch(`${API}/agent/identity`).then(r => r.json()).then(setAgentInfo).catch(() => {});
     fetch(`${API}/agent/reputation`).then(r => r.json()).then(setReputation).catch(() => {});
-  }, []);
-
-  const refreshReputation = () => {
-    fetch(`${API}/agent/reputation`).then(r => r.json()).then(setReputation).catch(() => {});
+    fetch(`${API}/health`).then(r => r.json()).then(setHealth).catch(() => {});
   };
+
+  useEffect(() => { refreshAll(); }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -42,34 +44,52 @@ export default function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {/* ERC-8004 Badge */}
             {agentInfo?.active && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-sm">
                 <span className="w-2 h-2 rounded-full bg-blue-400 pulse-dot" />
-                <span className="text-blue-300">ERC-8004 Agent</span>
+                <span className="text-blue-300">ERC-8004</span>
               </div>
             )}
 
-            {/* Reputation */}
+            {/* Stats Dashboard */}
             {reputation && (
-              <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-green-400">{reputation.score}</div>
-                  <div className="text-[10px] text-[var(--text-secondary)]">REP</div>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm">
+                <div className="text-center px-1">
+                  <div className="text-base font-bold text-green-400">{reputation.score}</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">SCORE</div>
                 </div>
-                <div className="w-px h-8 bg-[var(--border-color)]" />
-                <div className="text-center">
-                  <div className="text-lg font-bold">{reputation.totalDecisions}</div>
-                  <div className="text-[10px] text-[var(--text-secondary)]">DECISIONS</div>
+                <div className="w-px h-7 bg-[var(--border-color)]" />
+                <div className="text-center px-1">
+                  <div className="text-base font-bold text-red-400">{reputation.blockedThreats}</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">BLOCKED</div>
+                </div>
+                <div className="w-px h-7 bg-[var(--border-color)]" />
+                <div className="text-center px-1">
+                  <div className="text-base font-bold text-blue-400">{reputation.allowedSafe}</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">ALLOWED</div>
+                </div>
+                <div className="w-px h-7 bg-[var(--border-color)]" />
+                <div className="text-center px-1">
+                  <div className="text-base font-bold">{reputation.totalDecisions}</div>
+                  <div className="text-[9px] text-[var(--text-secondary)]">TOTAL</div>
                 </div>
               </div>
             )}
 
-            {/* Network indicator */}
+            {/* Balance */}
+            {health && (
+              <div className="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm">
+                <div className="text-base font-bold text-yellow-400">{parseFloat(health.balance).toFixed(3)}</div>
+                <div className="text-[9px] text-[var(--text-secondary)]">AVAX</div>
+              </div>
+            )}
+
+            {/* Network */}
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-sm">
               <span className="w-2 h-2 rounded-full bg-red-400 pulse-dot" />
-              <span className="text-red-300">Fuji Testnet</span>
+              <span className="text-red-300">Fuji</span>
             </div>
           </div>
         </div>
@@ -98,9 +118,10 @@ export default function App() {
       {/* Content */}
       <main className="flex-1 px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshReputation} />}
-          {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshReputation} />}
-          {activeTab === "agent" && <AgentGuard onAnalysis={refreshReputation} />}
+          {activeTab === "demo" && <DemoRunner onComplete={refreshAll} />}
+          {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} />}
+          {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} />}
+          {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} />}
           {activeTab === "log" && <AuditLog />}
         </div>
       </main>

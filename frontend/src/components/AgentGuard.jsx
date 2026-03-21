@@ -47,11 +47,13 @@ export default function AgentGuard({ onAnalysis }) {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [screenFlash, setScreenFlash] = useState(null);
 
   const evaluate = async (scenario) => {
     setSelectedScenario(scenario);
     setLoading(true);
     setResult(null);
+    setScreenFlash(null);
 
     try {
       const res = await fetch("/api/agent/evaluate", {
@@ -64,6 +66,11 @@ export default function AgentGuard({ onAnalysis }) {
       });
       const data = await res.json();
       setResult(data);
+
+      // Flash effect
+      setScreenFlash(data.decision === "BLOCK" ? "block" : "allow");
+      setTimeout(() => setScreenFlash(null), 1200);
+
       onAnalysis?.();
     } catch (err) {
       setResult({ error: err.message });
@@ -74,6 +81,13 @@ export default function AgentGuard({ onAnalysis }) {
 
   return (
     <div className="space-y-6">
+      {/* Screen flash overlay */}
+      {screenFlash && (
+        <div className={`fixed inset-0 z-50 pointer-events-none animate-flash ${
+          screenFlash === "block" ? "bg-red-500/30" : "bg-green-500/20"
+        }`} />
+      )}
+
       <div>
         <h2 className="text-lg font-semibold">AI Agent Guard (ERC-8004)</h2>
         <p className="text-sm text-[var(--text-secondary)] mt-1">
@@ -123,15 +137,15 @@ export default function AgentGuard({ onAnalysis }) {
       {result && !result.error && !loading && (
         <div className="space-y-4">
           {/* Decision Banner */}
-          <div className={`p-6 rounded-xl border text-center ${
+          <div className={`p-6 rounded-xl border text-center animate-pop ${
             result.decision === "BLOCK"
-              ? "bg-red-500/10 border-red-500/30"
+              ? "bg-red-500/10 border-red-500/30 animate-shake"
               : "bg-green-500/10 border-green-500/30"
           }`}>
             <div className="text-5xl mb-3">
               {result.decision === "BLOCK" ? "🚫" : "✅"}
             </div>
-            <h3 className={`text-2xl font-bold ${
+            <h3 className={`text-3xl font-black tracking-wider ${
               result.decision === "BLOCK" ? "text-red-400" : "text-green-400"
             }`}>
               {result.decision === "BLOCK" ? "ACTION BLOCKED" : "ACTION ALLOWED"}
