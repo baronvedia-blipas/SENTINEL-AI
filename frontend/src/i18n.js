@@ -99,6 +99,24 @@ const translations = {
     onChainRecord: "Registro On-Chain",
     suggestedFixes: "Correcciones Sugeridas",
     risk: "Riesgo",
+    txHash: "Hash de TX",
+    entryId: "ID de Entrada",
+    x402Payment: "Pago x402",
+    verified: "verificado",
+    line: "Línea",
+
+    // Validation
+    notSolidity: "No es Código Solidity",
+    notSolidityDesc: "La entrada no parece ser código Solidity válido.",
+    notSolidityHint: "Pega código Solidity válido que comience con",
+    notSolidityHint2: "y contenga",
+    notSolidityEtc: "etc.",
+
+    // Placeholders
+    emptyContract: "Pega un contrato Solidity y haz click en",
+    emptyContractHint: "o haz click en \"Cargar Ejemplo\" para probar con un contrato vulnerable",
+    emptyTx: "Configura una transacción y haz click en",
+    emptyTxHint: "o selecciona un preset para cargar un ejemplo",
 
     // Footer
     footer: "Sentinel AI — Avalanche Hackathon 2026",
@@ -192,6 +210,22 @@ const translations = {
     onChainRecord: "On-Chain Record",
     suggestedFixes: "Suggested Fixes",
     risk: "Risk",
+    txHash: "TX Hash",
+    entryId: "Entry ID",
+    x402Payment: "x402 Payment",
+    verified: "verified",
+    line: "Line",
+
+    notSolidity: "Not Solidity Code",
+    notSolidityDesc: "The input does not appear to be valid Solidity code.",
+    notSolidityHint: "Paste valid Solidity code starting with",
+    notSolidityHint2: "and containing",
+    notSolidityEtc: "etc.",
+
+    emptyContract: "Paste a Solidity contract and click",
+    emptyContractHint: "or click \"Load Example\" to try with a vulnerable contract",
+    emptyTx: "Configure a transaction and click",
+    emptyTxHint: "or click a preset to load an example",
 
     footer: "Sentinel AI — Avalanche Hackathon 2026",
   },

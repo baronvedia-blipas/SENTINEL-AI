@@ -115,12 +115,12 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
         {result?.riskLevel === "INVALID" && (
           <div className="p-6 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-center">
             <div className="text-4xl mb-3">⚠️</div>
-            <h3 className="text-lg font-bold text-yellow-400 mb-2">Not Solidity Code</h3>
+            <h3 className="text-lg font-bold text-yellow-400 mb-2">{t(lang, "notSolidity")}</h3>
             <p className="text-sm text-[var(--text-secondary)]">
-              {result.summary}
+              {t(lang, "notSolidityDesc")}
             </p>
             <p className="text-xs text-[var(--text-secondary)] mt-2">
-              Paste valid Solidity code starting with <code className="text-yellow-300">pragma solidity</code> and containing <code className="text-yellow-300">contract</code>, <code className="text-yellow-300">function</code>, etc.
+              {t(lang, "notSolidityHint")} <code className="text-yellow-300">pragma solidity</code> {t(lang, "notSolidityHint2")} <code className="text-yellow-300">contract</code>, <code className="text-yellow-300">function</code>, {t(lang, "notSolidityEtc")}
             </p>
           </div>
         )}
@@ -146,7 +146,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
                         {f.severity}
                       </span>
                       <span className="font-medium text-sm">{f.name}</span>
-                      <span className="text-xs text-[var(--text-secondary)] ml-auto">Line {f.line}</span>
+                      <span className="text-xs text-[var(--text-secondary)] ml-auto">{t(lang, "line")} {f.line}</span>
                     </div>
                     <p className="text-sm text-[var(--text-secondary)] mb-2">{f.detail}</p>
                     <code className="text-xs text-yellow-300 bg-yellow-500/10 px-2 py-1 rounded block overflow-x-auto">
@@ -207,7 +207,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
                 <h3 className="font-semibold text-sm mb-2 text-green-300">{t(lang, "onChainRecord")}</h3>
                 <div className="space-y-1 text-sm">
                   <p>
-                    <span className="text-[var(--text-secondary)]">TX Hash: </span>
+                    <span className="text-[var(--text-secondary)]">{t(lang, "txHash")}: </span>
                     <a
                       href={result.onChain.explorerUrl}
                       target="_blank"
@@ -218,7 +218,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
                     </a>
                   </p>
                   <p>
-                    <span className="text-[var(--text-secondary)]">Entry ID: </span>
+                    <span className="text-[var(--text-secondary)]">{t(lang, "entryId")}: </span>
                     <span className="font-mono">{result.onChain.entryId}</span>
                   </p>
                 </div>
@@ -228,9 +228,9 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
             {/* Payment info */}
             {result.payment && (
               <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
-                <span>x402 Payment:</span>
+                <span>{t(lang, "x402Payment")}:</span>
                 <span className="text-green-400">${result.payment.cost} {result.payment.currency}</span>
-                <span>verified</span>
+                <span>{t(lang, "verified")}</span>
               </div>
             )}
           </>
@@ -240,8 +240,8 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
           <div className="h-full flex items-center justify-center text-[var(--text-secondary)] text-sm">
             <div className="text-center">
               <div className="text-4xl mb-3">📝</div>
-              <p>Paste a Solidity contract and click "Analyze"</p>
-              <p className="text-xs mt-1">or click "Load Example" to try with a vulnerable contract</p>
+              <p>{t(lang, "emptyContract")} "{t(lang, "analyzeBtn")}"</p>
+              <p className="text-xs mt-1">{t(lang, "emptyContractHint")}</p>
             </div>
           </div>
         )}

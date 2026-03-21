@@ -28,6 +28,14 @@ export default function App() {
   const [reputation, setReputation] = useState(null);
   const [health, setHealth] = useState(null);
   const [lang, setLang] = useState("es");
+  const [langCooldown, setLangCooldown] = useState(false);
+
+  const toggleLang = () => {
+    if (langCooldown) return;
+    setLang(prev => prev === "es" ? "en" : "es");
+    setLangCooldown(true);
+    setTimeout(() => setLangCooldown(false), 1000);
+  };
 
   const wallet = useWallet();
   const isOwner = wallet.address?.toLowerCase() === AGENT_ADDRESS.toLowerCase();
@@ -96,11 +104,19 @@ export default function App() {
 
             {/* Language Toggle */}
             <button
-              onClick={() => setLang(lang === "es" ? "en" : "es")}
-              className="px-2.5 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm font-medium hover:bg-[var(--bg-card-hover)] transition-colors"
+              onClick={toggleLang}
+              disabled={langCooldown}
+              className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
+                langCooldown
+                  ? "opacity-50 cursor-not-allowed bg-[var(--bg-card)] border-[var(--border-color)]"
+                  : "bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]"
+              }`}
               title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
             >
-              {lang === "es" ? "ES" : "EN"}
+              <span className="flex items-center gap-1.5">
+                <span>{lang === "es" ? "🇪🇸" : "🇺🇸"}</span>
+                <span>{lang === "es" ? "ES" : "EN"}</span>
+              </span>
             </button>
 
             {/* Balance */}

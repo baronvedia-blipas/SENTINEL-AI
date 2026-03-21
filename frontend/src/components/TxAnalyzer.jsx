@@ -234,8 +234,8 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
           <div className="h-full flex items-center justify-center text-[var(--text-secondary)] text-sm">
             <div className="text-center">
               <div className="text-4xl mb-3">💸</div>
-              <p>Configure a transaction and click "Analyze"</p>
-              <p className="text-xs mt-1">or click a preset to load an example</p>
+              <p>{t(lang, "emptyTx")} "{t(lang, "analyzeTransaction")}"</p>
+              <p className="text-xs mt-1">{t(lang, "emptyTxHint")}</p>
             </div>
           </div>
         )}
