@@ -111,7 +111,20 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
           </div>
         )}
 
-        {result && (
+        {result?.riskLevel === "INVALID" && (
+          <div className="p-6 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-center">
+            <div className="text-4xl mb-3">⚠️</div>
+            <h3 className="text-lg font-bold text-yellow-400 mb-2">Not Solidity Code</h3>
+            <p className="text-sm text-[var(--text-secondary)]">
+              {result.summary}
+            </p>
+            <p className="text-xs text-[var(--text-secondary)] mt-2">
+              Paste valid Solidity code starting with <code className="text-yellow-300">pragma solidity</code> and containing <code className="text-yellow-300">contract</code>, <code className="text-yellow-300">function</code>, etc.
+            </p>
+          </div>
+        )}
+
+        {result && result.riskLevel !== "INVALID" && (
           <>
             {/* Risk Badge */}
             <div className="flex items-center gap-3">

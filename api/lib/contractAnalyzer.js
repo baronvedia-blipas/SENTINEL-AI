@@ -186,9 +186,35 @@ const VULNERABILITY_RULES = [
  * @param {string} sourceCode - Raw Solidity source code
  * @returns {{ riskLevel: string, findings: Array, summary: string }}
  */
+function isSolidityCode(code) {
+  const indicators = [
+    /pragma\s+solidity/i,
+    /contract\s+\w+/,
+    /function\s+\w+\s*\(/,
+    /mapping\s*\(/,
+    /uint256|uint128|address|bool|string|bytes/,
+    /msg\.sender|msg\.value/,
+    /require\s*\(/,
+    /modifier\s+\w+/,
+    /event\s+\w+/,
+    /emit\s+\w+/,
+  ];
+  const matches = indicators.filter(re => re.test(code)).length;
+  return matches >= 2;
+}
+
 function analyzeContract(sourceCode) {
   if (!sourceCode || typeof sourceCode !== "string") {
-    return { riskLevel: "LOW", findings: [], summary: "No code provided" };
+    return { riskLevel: "LOW", findings: [], summary: "No code provided", valid: false };
+  }
+
+  if (!isSolidityCode(sourceCode)) {
+    return {
+      riskLevel: "INVALID",
+      findings: [],
+      summary: "The input does not appear to be valid Solidity code.",
+      valid: false,
+    };
   }
 
   const findings = [];

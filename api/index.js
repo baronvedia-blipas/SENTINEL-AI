@@ -65,6 +65,12 @@ module.exports = async function handler(req, res) {
         if (!paymentHeader) return res.status(402).json({ error: "Payment Required", protocol: "x402", pricing: { cost: "0.001", currency: "USDC" } });
 
         const analysis = analyzeContract(sourceCode);
+
+        // Reject invalid Solidity code — no on-chain logging, no AI call
+        if (analysis.riskLevel === "INVALID") {
+          return res.json({ riskLevel: "INVALID", findings: [], summary: analysis.summary, valid: false });
+        }
+
         let aiExplanation;
         try { aiExplanation = await explainContractAnalysis(sourceCode, analysis, lang); }
         catch { aiExplanation = { explanation: `Se encontraron ${analysis.findings.length} vulnerabilidades con nivel ${analysis.riskLevel}.`, fixes: [], overall_recommendation: "Revisa las vulnerabilidades." }; }
