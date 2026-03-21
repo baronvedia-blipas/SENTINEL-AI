@@ -13,12 +13,12 @@ const API = "/api";
 const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
 
 const TAB_KEYS = [
-  { id: "demo", key: "liveDemo", icon: "🎬" },
-  { id: "contract", key: "contractAnalyzer", icon: "📝" },
-  { id: "transaction", key: "txAnalyzer", icon: "💸" },
-  { id: "agent", key: "agentGuard", icon: "🤖" },
-  { id: "profile", key: "agentIdentity", icon: "🆔" },
-  { id: "log", key: "auditLog", icon: "📋" },
+  { id: "demo", key: "liveDemo", icon: "▶" },
+  { id: "contract", key: "contractAnalyzer", icon: "◆" },
+  { id: "transaction", key: "txAnalyzer", icon: "◇" },
+  { id: "agent", key: "agentGuard", icon: "■" },
+  { id: "profile", key: "agentIdentity", icon: "●" },
+  { id: "log", key: "auditLog", icon: "≡" },
 ];
 
 export default function App() {
@@ -30,15 +30,15 @@ export default function App() {
   const [lang, setLang] = useState("es");
   const [langCooldown, setLangCooldown] = useState(false);
 
+  const wallet = useWallet();
+  const isOwner = wallet.address?.toLowerCase() === AGENT_ADDRESS.toLowerCase();
+
   const toggleLang = () => {
     if (langCooldown) return;
     setLang(prev => prev === "es" ? "en" : "es");
     setLangCooldown(true);
     setTimeout(() => setLangCooldown(false), 1000);
   };
-
-  const wallet = useWallet();
-  const isOwner = wallet.address?.toLowerCase() === AGENT_ADDRESS.toLowerCase();
 
   const refreshAll = () => {
     fetch(`${API}/agent/identity`).then(r => r.json()).then(setAgentInfo).catch(() => {});
@@ -48,7 +48,6 @@ export default function App() {
 
   useEffect(() => { refreshAll(); }, []);
 
-  // Show landing page
   if (showLanding) {
     return <LandingPage onEnter={() => setShowLanding(false)} lang={lang} />;
   }
@@ -56,119 +55,101 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b border-[var(--border-color)] px-6 py-4">
+      <header className="border-b border-[var(--border-color)] px-6 py-3 bg-[var(--bg-card)]/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setShowLanding(true)}>
-            <div className="text-3xl">🛡️</div>
+          {/* Left: Logo */}
+          <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setShowLanding(true)}>
+            <span className="text-2xl" style={{ filter: "drop-shadow(0 0 8px var(--accent-glow))" }}>🛡️</span>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">Sentinel AI</h1>
-              <p className="text-xs text-[var(--text-secondary)]">
+              <h1 className="text-base font-bold text-[var(--accent)] tracking-wider group-hover:text-white transition-colors">
+                SENTINEL AI
+              </h1>
+              <p className="text-[10px] font-mono text-[var(--text-secondary)]">
                 {t(lang, "subtitle")}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* ERC-8004 Badge */}
-            {agentInfo?.active && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-sm">
-                <span className="w-2 h-2 rounded-full bg-blue-400 pulse-dot" />
-                <span className="text-blue-300">ERC-8004</span>
-              </div>
-            )}
-
-            {/* Stats Dashboard */}
+          {/* Center: Stats */}
+          <div className="hidden md:flex items-center gap-1 font-mono text-xs">
             {reputation && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm">
-                <div className="text-center px-1">
-                  <div className="text-base font-bold text-green-400">{reputation.score}</div>
-                  <div className="text-[9px] text-[var(--text-secondary)]">SCORE</div>
+              <>
+                <div className="px-2.5 py-1 rounded bg-[var(--accent-glow)] border border-[var(--accent-border)]">
+                  <span className="text-[var(--text-secondary)]">REP </span>
+                  <span className="text-[var(--accent)] font-bold">{reputation.score}</span>
                 </div>
-                <div className="w-px h-7 bg-[var(--border-color)]" />
-                <div className="text-center px-1">
-                  <div className="text-base font-bold text-red-400">{reputation.blockedThreats}</div>
-                  <div className="text-[9px] text-[var(--text-secondary)]">BLOCKED</div>
+                <div className="px-2.5 py-1 rounded bg-[var(--red-glow)] border border-[rgba(255,51,85,0.25)]">
+                  <span className="text-[var(--text-secondary)]">BLK </span>
+                  <span className="text-[var(--red)] font-bold">{reputation.blockedThreats}</span>
                 </div>
-                <div className="w-px h-7 bg-[var(--border-color)]" />
-                <div className="text-center px-1">
-                  <div className="text-base font-bold text-blue-400">{reputation.allowedSafe}</div>
-                  <div className="text-[9px] text-[var(--text-secondary)]">ALLOWED</div>
+                <div className="px-2.5 py-1 rounded bg-[var(--accent-glow)] border border-[var(--accent-border)]">
+                  <span className="text-[var(--text-secondary)]">ALW </span>
+                  <span className="text-[var(--accent)] font-bold">{reputation.allowedSafe}</span>
                 </div>
-                <div className="w-px h-7 bg-[var(--border-color)]" />
-                <div className="text-center px-1">
-                  <div className="text-base font-bold">{reputation.totalDecisions}</div>
-                  <div className="text-[9px] text-[var(--text-secondary)]">TOTAL</div>
-                </div>
-              </div>
+                {health && (
+                  <div className="px-2.5 py-1 rounded bg-[rgba(255,204,0,0.08)] border border-[rgba(255,204,0,0.2)]">
+                    <span className="text-[var(--text-secondary)]">GAS </span>
+                    <span className="text-[var(--yellow)] font-bold">{parseFloat(health.balance).toFixed(3)}</span>
+                  </div>
+                )}
+              </>
             )}
+          </div>
 
-            {/* Language Toggle */}
-            <button
-              onClick={toggleLang}
-              disabled={langCooldown}
-              className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
-                langCooldown
-                  ? "opacity-50 cursor-not-allowed bg-[var(--bg-card)] border-[var(--border-color)]"
-                  : "bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]"
-              }`}
-              title={lang === "es" ? "Switch to English" : "Cambiar a Español"}
-            >
-              <span className="flex items-center gap-1.5">
-                <span>{lang === "es" ? "🇪🇸" : "🇺🇸"}</span>
-                <span>{lang === "es" ? "ES" : "EN"}</span>
+          {/* Right: Controls */}
+          <div className="flex items-center gap-2">
+            {/* Status indicators */}
+            <div className="hidden sm:flex items-center gap-2 mr-1">
+              {agentInfo?.active && (
+                <span className="flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-mono border border-[var(--accent-border)] text-[var(--accent)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
+                  ERC-8004
+                </span>
+              )}
+              <span className="flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-mono border border-[var(--red-glow)] text-[var(--red)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--red)] pulse-dot" />
+                FUJI
               </span>
-            </button>
-
-            {/* Balance */}
-            {health && (
-              <div className="px-3 py-1.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-sm">
-                <div className="text-base font-bold text-yellow-400">{parseFloat(health.balance).toFixed(3)}</div>
-                <div className="text-[9px] text-[var(--text-secondary)]">AVAX</div>
-              </div>
-            )}
-
-            {/* Network */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-sm">
-              <span className="w-2 h-2 rounded-full bg-red-400 pulse-dot" />
-              <span className="text-red-300">Fuji</span>
             </div>
+
+            {/* Lang */}
+            <button onClick={toggleLang} disabled={langCooldown}
+              className={`px-2 py-1 rounded text-[10px] font-mono font-bold border transition-all ${
+                langCooldown ? "opacity-40 cursor-not-allowed" : "hover:border-[var(--accent-border)] hover:text-[var(--accent)]"
+              } border-[var(--border-color)] text-[var(--text-secondary)]`}>
+              {lang === "es" ? "ES" : "EN"}
+            </button>
 
             {/* Wallet */}
             {wallet.address ? (
               <div className="relative group">
-                <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]">
-                  <span className="text-lg">🦊</span>
-                  <div className="text-left">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-xs">{wallet.shortAddress}</span>
-                      {isOwner && (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">OWNER</span>
-                      )}
-                    </div>
-                    <div className="text-[9px] text-[var(--text-secondary)]">{wallet.isOnFuji ? "Fuji C-Chain" : "Wrong Network"}</div>
-                  </div>
-                  <span className="text-[var(--text-secondary)] text-xs ml-1">▼</span>
+                <button className="flex items-center gap-2 px-2.5 py-1.5 rounded border text-xs font-mono border-[var(--accent-border)] bg-[var(--accent-glow)] text-[var(--accent)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                  {wallet.shortAddress}
+                  {isOwner && (
+                    <span className="px-1 py-0.5 rounded text-[8px] font-bold bg-[var(--accent)] text-[var(--bg-dark)]">
+                      OWNER
+                    </span>
+                  )}
                 </button>
-                {/* Dropdown */}
-                <div className="absolute right-0 top-full mt-1 w-48 py-1 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <div className="absolute right-0 top-full mt-1 w-48 py-1 rounded bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
                   <div className="px-3 py-2 border-b border-[var(--border-color)]">
-                    <div className="text-xs font-mono text-[var(--text-secondary)]">{wallet.address}</div>
+                    <div className="text-[10px] font-mono text-[var(--text-secondary)] break-all">{wallet.address}</div>
                   </div>
                   <a href={`https://testnet.snowtrace.io/address/${wallet.address}`} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]">
-                    <span>🔍</span> {t(lang, "viewExplorer")}
+                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]">
+                    ⌘ {t(lang, "viewExplorer")}
                   </a>
                   <button onClick={wallet.disconnect}
-                    className="flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 w-full text-left">
-                    <span>🚪</span> {t(lang, "disconnect")}
+                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--red)] hover:bg-[var(--red-glow)] w-full text-left">
+                    ✕ {t(lang, "disconnect")}
                   </button>
                 </div>
               </div>
             ) : (
               <button onClick={wallet.connect} disabled={wallet.isConnecting || !wallet.hasMetaMask}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 disabled:opacity-50 text-sm font-medium text-white shadow-lg shadow-orange-500/20">
-                <span className="text-lg">🦊</span>
-                {wallet.isConnecting ? t(lang, "connecting") : !wallet.hasMetaMask ? t(lang, "installMetamask") : t(lang, "connectWallet")}
+                className="btn-hack px-3 py-1.5 rounded text-xs font-mono font-bold">
+                {wallet.isConnecting ? "..." : t(lang, "connectWallet")}
               </button>
             )}
           </div>
@@ -177,25 +158,25 @@ export default function App() {
 
       {/* Wrong network */}
       {wallet.address && !wallet.isOnFuji && (
-        <div className="bg-yellow-500/10 border-b border-yellow-500/30 px-6 py-2">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <span className="text-sm text-yellow-300">{t(lang, "wrongNetwork")}</span>
-            <button onClick={wallet.connect} className="text-xs px-3 py-1 rounded bg-yellow-500/20 text-yellow-300">{t(lang, "switchBtn")}</button>
+        <div className="bg-[var(--red-glow)] border-b border-[rgba(255,51,85,0.3)] px-6 py-2">
+          <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-mono">
+            <span className="text-[var(--red)]">⚠ {t(lang, "wrongNetwork")}</span>
+            <button onClick={wallet.connect} className="btn-hack px-3 py-1 rounded text-[10px]">{t(lang, "switchBtn")}</button>
           </div>
         </div>
       )}
 
       {/* Tabs */}
-      <nav className="border-b border-[var(--border-color)] px-6">
-        <div className="max-w-7xl mx-auto flex gap-1">
+      <nav className="border-b border-[var(--border-color)] px-6 bg-[var(--bg-dark)]">
+        <div className="max-w-7xl mx-auto flex gap-0">
           {TAB_KEYS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
+              className={`px-4 py-2.5 text-xs font-mono font-medium transition-all border-b-2 ${
                 activeTab === tab.id
-                  ? "border-blue-400 text-blue-300"
-                  : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  ? "border-[var(--accent)] text-[var(--accent)]"
+                  : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)]"
               }`}>
-              <span className="mr-2">{tab.icon}</span>
+              <span className="mr-1.5 opacity-50">{tab.icon}</span>
               {t(lang, tab.key)}
             </button>
           ))}
@@ -215,13 +196,13 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[var(--border-color)] px-6 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-[var(--text-secondary)]">
+      <footer className="border-t border-[var(--border-color)] px-6 py-2">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-[10px] font-mono text-[var(--text-secondary)]">
           <span>{t(lang, "footer")}</span>
-          <div className="flex items-center gap-4">
-            <span>x402 Micropayments</span>
-            <span>EncryptedERC Reports</span>
-            <span>ERC-8004 Identity</span>
+          <div className="flex items-center gap-3">
+            <span>[x402]</span>
+            <span>[EncryptedERC]</span>
+            <span>[ERC-8004]</span>
           </div>
         </div>
       </footer>

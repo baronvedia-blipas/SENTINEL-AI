@@ -141,14 +141,14 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
           {/* Decision Banner */}
           <div className={`p-6 rounded-xl border text-center animate-pop ${
             result.decision === "BLOCK"
-              ? "bg-red-500/10 border-red-500/30 animate-shake"
-              : "bg-green-500/10 border-green-500/30"
+              ? "bg-[var(--red-glow)] border-[rgba(255,51,85,0.3)] animate-shake"
+              : "bg-[var(--accent-glow)] border-[var(--accent-border)]"
           }`}>
             <div className="text-5xl mb-3">
               {result.decision === "BLOCK" ? "🚫" : "✅"}
             </div>
-            <h3 className={`text-3xl font-black tracking-wider ${
-              result.decision === "BLOCK" ? "text-red-400" : "text-green-400"
+            <h3 className={`text-3xl font-black font-mono tracking-widest ${
+              result.decision === "BLOCK" ? "text-[var(--red)]" : "text-[var(--accent)]"
             }`}>
               {result.decision === "BLOCK" ? t(lang, "actionBlocked") : t(lang, "actionAllowed")}
             </h3>

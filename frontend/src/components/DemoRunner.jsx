@@ -123,33 +123,27 @@ export default function DemoRunner({ onComplete, lang = "es" }) {
       {/* Screen flash overlay */}
       {screenFlash && (
         <div className={`fixed inset-0 z-50 pointer-events-none animate-flash ${
-          screenFlash === "block"
-            ? "bg-red-500/20"
-            : "bg-green-500/20"
+          screenFlash === "block" ? "bg-[var(--red)]/15" : "bg-[var(--accent)]/10"
         }`} />
       )}
 
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h2 className="text-2xl font-bold">{t(lang, "demoTitle")}</h2>
-        <p className="text-[var(--text-secondary)] max-w-lg mx-auto">
+      <div className="text-center space-y-4">
+        <h2 className="text-2xl font-bold font-mono text-[var(--accent)]">&gt; {t(lang, "demoTitle")}</h2>
+        <p className="text-sm font-mono text-[var(--text-secondary)] max-w-lg mx-auto">
           {t(lang, "demoDesc")}
         </p>
-        <button
-          onClick={runDemo}
-          disabled={running}
-          className={`px-8 py-3 rounded-xl font-bold text-lg transition-all ${
-            running
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
-          }`}
-        >
+        <button onClick={runDemo} disabled={running}
+          className={`px-8 py-3 rounded-lg font-mono font-bold text-lg tracking-wider transition-all ${
+            running ? "opacity-40 cursor-not-allowed bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)]"
+              : "btn-primary"
+          }`}>
           {running ? (
             <span className="flex items-center gap-2">
               <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
               {t(lang, "runningDemo")}
             </span>
-          ) : t(lang, "runDemo")}
+          ) : `[ ${t(lang, "runDemo")} ]`}
         </button>
       </div>
 

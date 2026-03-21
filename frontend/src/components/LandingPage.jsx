@@ -2,60 +2,69 @@ import { t } from "../i18n.js";
 
 export default function LandingPage({ onEnter, lang = "es" }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Background grid */}
-      <div className="absolute inset-0 opacity-5"
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden scanline">
+      {/* Grid background */}
+      <div className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: "linear-gradient(rgba(49,130,206,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(49,130,206,0.3) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          backgroundImage: "linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
       />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+      {/* Glow */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-[0.04] rounded-full blur-[120px]" />
 
       <div className="relative z-10 text-center space-y-8 px-6">
-        <div className="text-8xl mb-4 animate-pop">🛡️</div>
-        <div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-              Sentinel AI
-            </span>
-          </h1>
-          <p className="text-xl md:text-2xl text-[var(--text-secondary)] mt-4 max-w-2xl mx-auto">
-            {t(lang, "landingSubtitle")}
-          </p>
+        {/* Shield ASCII-ish */}
+        <div className="text-7xl mb-2 animate-pop" style={{ filter: "drop-shadow(0 0 30px var(--accent-glow))" }}>
+          🛡️
         </div>
 
-        <div className="flex flex-wrap justify-center gap-3 max-w-lg mx-auto">
-          {[
-            { label: "ERC-8004 Agent", color: "blue" },
-            { label: "x402 Micropayments", color: "purple" },
-            { label: "EncryptedERC", color: "green" },
-            { label: "Avalanche Fuji", color: "red" },
-          ].map((tag) => (
-            <span key={tag.label}
-              className={`px-3 py-1.5 rounded-lg text-sm border bg-${tag.color}-500/10 border-${tag.color}-500/20 text-${tag.color}-300`}>
-              {tag.label}
+        {/* Title */}
+        <div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-[var(--accent)]"
+            style={{ textShadow: "0 0 40px var(--accent-glow)" }}>
+            SENTINEL AI
+          </h1>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <span className="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-[var(--accent-border)]" />
+            <p className="text-base text-[var(--text-secondary)] font-mono">
+              {t(lang, "landingSubtitle")}
+            </p>
+            <span className="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-[var(--accent-border)]" />
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap justify-center gap-2 max-w-lg mx-auto">
+          {["ERC-8004", "x402", "EncryptedERC", "Avalanche"].map((tag) => (
+            <span key={tag}
+              className="px-3 py-1 rounded font-mono text-xs border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)]">
+              [{tag}]
             </span>
           ))}
         </div>
 
-        <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
-          {t(lang, "landingDesc")}
+        {/* Description */}
+        <p className="text-sm text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed font-mono">
+          &gt; {t(lang, "landingDesc")}
+          <span className="typing-cursor" />
         </p>
 
+        {/* CTA */}
         <button onClick={onEnter}
-          className="px-10 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 font-bold text-lg transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105">
-          {t(lang, "enterApp")}
+          className="btn-primary px-10 py-4 rounded-lg text-lg tracking-wider">
+          {t(lang, "enterApp")} →
         </button>
 
-        <div className="flex items-center justify-center gap-2 text-xs text-[var(--text-secondary)]">
-          <span className="w-2 h-2 rounded-full bg-red-400 pulse-dot" />
+        {/* Status */}
+        <div className="flex items-center justify-center gap-2 text-xs font-mono text-[var(--text-secondary)]">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent)] pulse-dot" />
           {t(lang, "liveOn")}
         </div>
       </div>
 
-      <div className="absolute bottom-6 text-xs text-[var(--text-secondary)]">
+      <div className="absolute bottom-6 text-xs font-mono text-[var(--text-secondary)] opacity-50">
         Avalanche — Aleph Hackathon 2026
       </div>
     </div>

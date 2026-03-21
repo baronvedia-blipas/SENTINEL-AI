@@ -1,16 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --sentinel-red: #e53e3e;
-  --sentinel-green: #38a169;
-  --sentinel-yellow: #d69e2e;
-  --sentinel-blue: #3182ce;
-  --bg-dark: #0f1117;
-  --bg-card: #1a1d2e;
-  --bg-card-hover: #242840;
-  --border-color: #2d3148;
-  --text-primary: #e2e8f0;
-  --text-secondary: #a0aec0;
+  --accent: #00ff88;
+  --accent-dim: #00cc6a;
+  --accent-glow: rgba(0, 255, 136, 0.15);
+  --accent-border: rgba(0, 255, 136, 0.25);
+  --red: #ff3355;
+  --red-glow: rgba(255, 51, 85, 0.15);
+  --yellow: #ffcc00;
+  --blue: #00aaff;
+  --bg-dark: #0a0e14;
+  --bg-card: #111820;
+  --bg-card-hover: #182028;
+  --border-color: #1a2533;
+  --text-primary: #c8d6e5;
+  --text-secondary: #5c6b7a;
+  --terminal-font: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
 }
 
 body {
@@ -19,67 +24,133 @@ body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #1a2533; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
 
-/* Risk level badges */
-.risk-high { background: rgba(229, 62, 62, 0.15); color: #fc8181; border: 1px solid rgba(229, 62, 62, 0.3); }
-.risk-medium { background: rgba(214, 158, 46, 0.15); color: #f6e05e; border: 1px solid rgba(214, 158, 46, 0.3); }
-.risk-low { background: rgba(56, 161, 105, 0.15); color: #68d391; border: 1px solid rgba(56, 161, 105, 0.3); }
+/* Risk badges */
+.risk-high { background: var(--red-glow); color: var(--red); border: 1px solid rgba(255,51,85,0.3); }
+.risk-medium { background: rgba(255,204,0,0.1); color: var(--yellow); border: 1px solid rgba(255,204,0,0.25); }
+.risk-low { background: var(--accent-glow); color: var(--accent); border: 1px solid var(--accent-border); }
 
 /* Code block */
 .code-block {
-  background: #0d1117;
+  background: #080c10;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-family: "JetBrains Mono", "Fira Code", monospace;
+  border-radius: 6px;
+  font-family: var(--terminal-font);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
-/* Pulse animation for live indicators */
-@keyframes pulse-dot {
+/* Terminal cursor blink */
+@keyframes blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0; }
+}
+
+/* Pulse for live indicators */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+  50% { opacity: 0.4; box-shadow: none; }
 }
 .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
 
-/* Glow effect for cards */
+/* Card hover glow */
 .card-glow {
-  transition: box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .card-glow:hover {
-  box-shadow: 0 0 20px rgba(49, 130, 206, 0.15);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px rgba(0,255,136,0.02);
 }
 
-/* BLOCK/ALLOW flash animation */
+/* Flash animation */
 @keyframes flash {
   0% { opacity: 0; }
   15% { opacity: 1; }
   100% { opacity: 0; }
 }
-.animate-flash {
-  animation: flash 1.2s ease-out forwards;
-}
+.animate-flash { animation: flash 1.2s ease-out forwards; }
 
-/* Shake animation for BLOCK */
+/* Shake */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 50%, 90% { transform: translateX(-4px); }
   30%, 70% { transform: translateX(4px); }
 }
-.animate-shake {
-  animation: shake 0.5s ease-in-out;
-}
+.animate-shake { animation: shake 0.5s ease-in-out; }
 
-/* Scale pop for decision banners */
+/* Pop in */
 @keyframes pop-in {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.05); }
+  0% { transform: scale(0.85); opacity: 0; }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); opacity: 1; }
 }
-.animate-pop {
-  animation: pop-in 0.4s ease-out;
+.animate-pop { animation: pop-in 0.4s ease-out; }
+
+/* Scanline effect for landing */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+.scanline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+  animation: scanline 4s linear infinite;
+}
+
+/* Glitch text */
+@keyframes glitch {
+  0%, 100% { text-shadow: 2px 0 var(--accent), -2px 0 var(--red); }
+  25% { text-shadow: -2px 0 var(--accent), 2px 0 var(--red); }
+  50% { text-shadow: 2px 2px var(--accent), -2px -2px var(--red); }
+  75% { text-shadow: -2px 2px var(--accent), 2px -2px var(--red); }
+}
+
+/* Typing cursor */
+@keyframes cursor-blink {
+  0%, 100% { border-color: var(--accent); }
+  50% { border-color: transparent; }
+}
+.typing-cursor {
+  border-right: 2px solid var(--accent);
+  animation: cursor-blink 1s step-end infinite;
+  padding-right: 2px;
+}
+
+/* Green glow button */
+.btn-hack {
+  background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.05));
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+.btn-hack:hover {
+  background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,255,136,0.1));
+  box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(0,255,136,0.05);
+  border-color: var(--accent);
+}
+
+/* Primary action button */
+.btn-primary {
+  background: var(--accent);
+  color: #0a0e14;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  box-shadow: 0 0 25px var(--accent-glow), 0 0 50px rgba(0,255,136,0.1);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
