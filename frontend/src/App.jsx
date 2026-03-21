@@ -14,7 +14,6 @@ const API = "/api";
 const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
 
 const TAB_KEYS = [
-  { id: "demo", key: "liveDemo", icon: "▶" },
   { id: "contract", key: "contractAnalyzer", icon: "◆" },
   { id: "transaction", key: "txAnalyzer", icon: "◇" },
   { id: "agent", key: "agentGuard", icon: "■" },
@@ -24,7 +23,7 @@ const TAB_KEYS = [
 
 export default function App() {
   const [showLanding, setShowLanding] = useState(true);
-  const [activeTab, setActiveTab] = useState("demo");
+  const [activeTab, setActiveTab] = useState("contract");
   const [agentInfo, setAgentInfo] = useState(null);
   const [reputation, setReputation] = useState(null);
   const [health, setHealth] = useState(null);
@@ -187,7 +186,6 @@ export default function App() {
       {/* Content */}
       <main className="flex-1 px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          {activeTab === "demo" && <DemoRunner onComplete={refreshAll} lang={lang} />}
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
