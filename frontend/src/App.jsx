@@ -8,6 +8,7 @@ import AgentProfile from "./components/AgentProfile.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import useWallet from "./hooks/useWallet.js";
 import { t } from "./i18n.js";
+import SentinelLogo from "./components/SentinelLogo.jsx";
 
 const API = "/api";
 const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
@@ -59,7 +60,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left: Logo */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setShowLanding(true)}>
-            <span className="text-2xl" style={{ filter: "drop-shadow(0 0 8px var(--accent-glow))" }}>🛡️</span>
+            <SentinelLogo size={28} glow={true} />
             <div>
               <h1 className="text-base font-bold text-[var(--accent)] tracking-wider group-hover:text-white transition-colors">
                 SENTINEL AI

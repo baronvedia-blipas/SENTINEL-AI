@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import SentinelLogo from "./SentinelLogo.jsx";
 
 export default function AgentProfile() {
   const [agent, setAgent] = useState(null);
@@ -29,7 +30,7 @@ export default function AgentProfile() {
       {/* Profile Card */}
       <div className="p-6 rounded-2xl bg-gradient-to-br from-[var(--bg-card)] to-blue-500/5 border border-[var(--border-color)] card-glow">
         <div className="flex items-start gap-6">
-          <div className="text-6xl">🛡️</div>
+          <SentinelLogo size={60} glow={true} />
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h2 className="text-2xl font-bold">{agent?.name || "Sentinel AI"}</h2>

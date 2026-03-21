@@ -1,4 +1,5 @@
 import { t } from "../i18n.js";
+import { SentinelLogoLarge } from "./SentinelLogo.jsx";
 
 export default function LandingPage({ onEnter, lang = "es" }) {
   return (
@@ -15,10 +16,8 @@ export default function LandingPage({ onEnter, lang = "es" }) {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-[0.04] rounded-full blur-[120px]" />
 
       <div className="relative z-10 text-center space-y-8 px-6">
-        {/* Shield ASCII-ish */}
-        <div className="text-7xl mb-2 animate-pop" style={{ filter: "drop-shadow(0 0 30px var(--accent-glow))" }}>
-          🛡️
-        </div>
+        {/* Logo */}
+        <SentinelLogoLarge />
 
         {/* Title */}
         <div>
