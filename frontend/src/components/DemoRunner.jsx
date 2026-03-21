@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../i18n.js";
 
 const DEMO_STEPS = [
   {
@@ -69,7 +70,7 @@ contract VulnerableBank {
   },
 ];
 
-export default function DemoRunner({ onComplete }) {
+export default function DemoRunner({ onComplete, lang = "es" }) {
   const [running, setRunning] = useState(false);
   const [currentStep, setCurrentStep] = useState(-1);
   const [results, setResults] = useState([]);
@@ -130,9 +131,9 @@ export default function DemoRunner({ onComplete }) {
 
       {/* Header */}
       <div className="text-center space-y-3">
-        <h2 className="text-2xl font-bold">Live Demo</h2>
+        <h2 className="text-2xl font-bold">{t(lang, "demoTitle")}</h2>
         <p className="text-[var(--text-secondary)] max-w-lg mx-auto">
-          Watch Sentinel AI analyze, block threats, and allow safe actions — all logged on Avalanche Fuji in real time.
+          {t(lang, "demoDesc")}
         </p>
         <button
           onClick={runDemo}
@@ -146,9 +147,9 @@ export default function DemoRunner({ onComplete }) {
           {running ? (
             <span className="flex items-center gap-2">
               <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-              Running Demo...
+              {t(lang, "runningDemo")}
             </span>
-          ) : "Run Demo"}
+          ) : t(lang, "runDemo")}
         </button>
       </div>
 

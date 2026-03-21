@@ -7,17 +7,18 @@ import DemoRunner from "./components/DemoRunner.jsx";
 import AgentProfile from "./components/AgentProfile.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import useWallet from "./hooks/useWallet.js";
+import { t } from "./i18n.js";
 
 const API = "/api";
 const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
 
-const TABS = [
-  { id: "demo", label: "Live Demo", icon: "🎬" },
-  { id: "contract", label: "Contract Analyzer", icon: "📝" },
-  { id: "transaction", label: "TX Risk Analyzer", icon: "💸" },
-  { id: "agent", label: "Agent Guard", icon: "🤖" },
-  { id: "profile", label: "Agent Identity", icon: "🆔" },
-  { id: "log", label: "Audit Log", icon: "📋" },
+const TAB_KEYS = [
+  { id: "demo", key: "liveDemo", icon: "🎬" },
+  { id: "contract", key: "contractAnalyzer", icon: "📝" },
+  { id: "transaction", key: "txAnalyzer", icon: "💸" },
+  { id: "agent", key: "agentGuard", icon: "🤖" },
+  { id: "profile", key: "agentIdentity", icon: "🆔" },
+  { id: "log", key: "auditLog", icon: "📋" },
 ];
 
 export default function App() {
@@ -41,7 +42,7 @@ export default function App() {
 
   // Show landing page
   if (showLanding) {
-    return <LandingPage onEnter={() => setShowLanding(false)} />;
+    return <LandingPage onEnter={() => setShowLanding(false)} lang={lang} />;
   }
 
   return (
@@ -54,7 +55,7 @@ export default function App() {
             <div>
               <h1 className="text-xl font-bold tracking-tight">Sentinel AI</h1>
               <p className="text-xs text-[var(--text-secondary)]">
-                Autonomous Security Agent on Avalanche
+                {t(lang, "subtitle")}
               </p>
             </div>
           </div>
@@ -139,11 +140,11 @@ export default function App() {
                   </div>
                   <a href={`https://testnet.snowtrace.io/address/${wallet.address}`} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]">
-                    <span>🔍</span> View on Explorer
+                    <span>🔍</span> {t(lang, "viewExplorer")}
                   </a>
                   <button onClick={wallet.disconnect}
                     className="flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 w-full text-left">
-                    <span>🚪</span> Disconnect
+                    <span>🚪</span> {t(lang, "disconnect")}
                   </button>
                 </div>
               </div>
@@ -151,7 +152,7 @@ export default function App() {
               <button onClick={wallet.connect} disabled={wallet.isConnecting || !wallet.hasMetaMask}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 disabled:opacity-50 text-sm font-medium text-white shadow-lg shadow-orange-500/20">
                 <span className="text-lg">🦊</span>
-                {wallet.isConnecting ? "Connecting..." : !wallet.hasMetaMask ? "Install MetaMask" : "Connect Wallet"}
+                {wallet.isConnecting ? t(lang, "connecting") : !wallet.hasMetaMask ? t(lang, "installMetamask") : t(lang, "connectWallet")}
               </button>
             )}
           </div>
@@ -162,8 +163,8 @@ export default function App() {
       {wallet.address && !wallet.isOnFuji && (
         <div className="bg-yellow-500/10 border-b border-yellow-500/30 px-6 py-2">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <span className="text-sm text-yellow-300">Wrong network. Switch to Avalanche Fuji.</span>
-            <button onClick={wallet.connect} className="text-xs px-3 py-1 rounded bg-yellow-500/20 text-yellow-300">Switch</button>
+            <span className="text-sm text-yellow-300">{t(lang, "wrongNetwork")}</span>
+            <button onClick={wallet.connect} className="text-xs px-3 py-1 rounded bg-yellow-500/20 text-yellow-300">{t(lang, "switchBtn")}</button>
           </div>
         </div>
       )}
@@ -171,7 +172,7 @@ export default function App() {
       {/* Tabs */}
       <nav className="border-b border-[var(--border-color)] px-6">
         <div className="max-w-7xl mx-auto flex gap-1">
-          {TABS.map((tab) => (
+          {TAB_KEYS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-3 text-sm font-medium transition-colors border-b-2 ${
                 activeTab === tab.id
@@ -179,7 +180,7 @@ export default function App() {
                   : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}>
               <span className="mr-2">{tab.icon}</span>
-              {tab.label}
+              {t(lang, tab.key)}
             </button>
           ))}
         </div>
@@ -188,7 +189,7 @@ export default function App() {
       {/* Content */}
       <main className="flex-1 px-6 py-6">
         <div className="max-w-7xl mx-auto">
-          {activeTab === "demo" && <DemoRunner onComplete={refreshAll} />}
+          {activeTab === "demo" && <DemoRunner onComplete={refreshAll} lang={lang} />}
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} />}
@@ -200,7 +201,7 @@ export default function App() {
       {/* Footer */}
       <footer className="border-t border-[var(--border-color)] px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-xs text-[var(--text-secondary)]">
-          <span>Sentinel AI — Avalanche Hackathon 2026</span>
+          <span>{t(lang, "footer")}</span>
           <div className="flex items-center gap-4">
             <span>x402 Micropayments</span>
             <span>EncryptedERC Reports</span>
