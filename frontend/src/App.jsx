@@ -118,19 +118,35 @@ export default function App() {
 
             {/* Wallet */}
             {wallet.address ? (
-              <button onClick={wallet.disconnect}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]">
-                <span className="text-lg">🦊</span>
-                <div className="text-left">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs">{wallet.shortAddress}</span>
-                    {isOwner && (
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">OWNER</span>
-                    )}
+              <div className="relative group">
+                <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-sm bg-[var(--bg-card)] border-[var(--border-color)] hover:bg-[var(--bg-card-hover)]">
+                  <span className="text-lg">🦊</span>
+                  <div className="text-left">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-xs">{wallet.shortAddress}</span>
+                      {isOwner && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">OWNER</span>
+                      )}
+                    </div>
+                    <div className="text-[9px] text-[var(--text-secondary)]">{wallet.isOnFuji ? "Fuji C-Chain" : "Wrong Network"}</div>
                   </div>
-                  <div className="text-[9px] text-[var(--text-secondary)]">{wallet.isOnFuji ? "Fuji C-Chain" : "Wrong Network"}</div>
+                  <span className="text-[var(--text-secondary)] text-xs ml-1">▼</span>
+                </button>
+                {/* Dropdown */}
+                <div className="absolute right-0 top-full mt-1 w-48 py-1 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  <div className="px-3 py-2 border-b border-[var(--border-color)]">
+                    <div className="text-xs font-mono text-[var(--text-secondary)]">{wallet.address}</div>
+                  </div>
+                  <a href={`https://testnet.snowtrace.io/address/${wallet.address}`} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]">
+                    <span>🔍</span> View on Explorer
+                  </a>
+                  <button onClick={wallet.disconnect}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 w-full text-left">
+                    <span>🚪</span> Disconnect
+                  </button>
                 </div>
-              </button>
+              </div>
             ) : (
               <button onClick={wallet.connect} disabled={wallet.isConnecting || !wallet.hasMetaMask}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 disabled:opacity-50 text-sm font-medium text-white shadow-lg shadow-orange-500/20">
