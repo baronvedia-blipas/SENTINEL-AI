@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --sentinel-red: #e53e3e;
+  --sentinel-green: #38a169;
+  --sentinel-yellow: #d69e2e;
+  --sentinel-blue: #3182ce;
+  --bg-dark: #0f1117;
+  --bg-card: #1a1d2e;
+  --bg-card-hover: #242840;
+  --border-color: #2d3148;
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+/* Risk level badges */
+.risk-high { background: rgba(229, 62, 62, 0.15); color: #fc8181; border: 1px solid rgba(229, 62, 62, 0.3); }
+.risk-medium { background: rgba(214, 158, 46, 0.15); color: #f6e05e; border: 1px solid rgba(214, 158, 46, 0.3); }
+.risk-low { background: rgba(56, 161, 105, 0.15); color: #68d391; border: 1px solid rgba(56, 161, 105, 0.3); }
+
+/* Code block */
+.code-block {
+  background: #0d1117;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Glow effect for cards */
+.card-glow {
+  transition: box-shadow 0.3s ease;
+}
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(49, 130, 206, 0.15);
+}
