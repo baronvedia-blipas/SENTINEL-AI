@@ -34,7 +34,7 @@ async function claudeChat(messages, options = {}) {
 }
 
 // ── Contract Analysis Explanation ──
-async function explainContractAnalysis(sourceCode, analysis) {
+async function explainContractAnalysis(sourceCode, analysis, lang = "es") {
   if (analysis.findings.length === 0) {
     return {
       explanation: "El contrato analizado no presenta vulnerabilidades conocidas.",
@@ -47,7 +47,11 @@ async function explainContractAnalysis(sourceCode, analysis) {
     .map((f) => `- ${f.name} (${f.severity}): ${f.detail} [línea ${f.line}]`)
     .join("\n");
 
-  const prompt = `Eres un auditor de seguridad de smart contracts. Analiza estas vulnerabilidades y genera un reporte en español.
+  const langInstruction = lang === "en"
+    ? "You are a smart contract security auditor. Analyze these vulnerabilities and generate a report in English."
+    : "Eres un auditor de seguridad de smart contracts. Analiza estas vulnerabilidades y genera un reporte en español.";
+
+  const prompt = `${langInstruction}
 
 NIVEL DE RIESGO: ${analysis.riskLevel}
 
@@ -122,7 +126,7 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
 }
 
 // ── Transaction Risk Explanation ──
-async function explainTransactionRisk(tx, analysis) {
+async function explainTransactionRisk(tx, analysis, lang = "es") {
   if (analysis.findings.length === 0) {
     return {
       explanation: "La transacción no presenta riesgos detectables.",
@@ -134,7 +138,11 @@ async function explainTransactionRisk(tx, analysis) {
     .map((f) => `- ${f.name} (${f.severity}): ${f.warning}`)
     .join("\n");
 
-  const prompt = `Eres un asesor de seguridad Web3. Explica en español simple (máximo 3 oraciones) los riesgos:
+  const langPrompt = lang === "en"
+    ? "You are a Web3 security advisor. Explain in simple English (max 3 sentences) the risks:"
+    : "Eres un asesor de seguridad Web3. Explica en español simple (máximo 3 oraciones) los riesgos:";
+
+  const prompt = `${langPrompt}
 
 Tipo: ${tx.type} | Monto: ${tx.amount} | Contrato: ${tx.contractAddress || "N/A"}
 

@@ -32,7 +32,7 @@ const PRESETS = [
   },
 ];
 
-export default function TxAnalyzer({ onAnalysis }) {
+export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
   const [txData, setTxData] = useState({
     type: "approve",
     amount: "",
@@ -54,7 +54,7 @@ export default function TxAnalyzer({ onAnalysis }) {
           "Content-Type": "application/json",
           "X-402-Payment": "demo-payment-token",
         },
-        body: JSON.stringify(txData),
+        body: JSON.stringify({ ...txData, lang }),
       });
       const data = await res.json();
       setResult(data);

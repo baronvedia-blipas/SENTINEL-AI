@@ -60,13 +60,13 @@ module.exports = async function handler(req, res) {
       const paymentHeader = req.headers["x-402-payment"];
 
       if (path === "analyze/contract") {
-        const { sourceCode } = req.body;
+        const { sourceCode, lang } = req.body;
         if (!sourceCode) return res.status(400).json({ error: "sourceCode is required" });
         if (!paymentHeader) return res.status(402).json({ error: "Payment Required", protocol: "x402", pricing: { cost: "0.001", currency: "USDC" } });
 
         const analysis = analyzeContract(sourceCode);
         let aiExplanation;
-        try { aiExplanation = await explainContractAnalysis(sourceCode, analysis); }
+        try { aiExplanation = await explainContractAnalysis(sourceCode, analysis, lang); }
         catch { aiExplanation = { explanation: `Se encontraron ${analysis.findings.length} vulnerabilidades con nivel ${analysis.riskLevel}.`, fixes: [], overall_recommendation: "Revisa las vulnerabilidades." }; }
 
         let onChainResult = null;
@@ -85,7 +85,7 @@ module.exports = async function handler(req, res) {
 
         const analysis = analyzeTransaction(tx);
         let aiExplanation;
-        try { aiExplanation = await explainTransactionRisk(tx, analysis); }
+        try { aiExplanation = await explainTransactionRisk(tx, analysis, tx.lang); }
         catch { aiExplanation = { explanation: analysis.summary, recommendation: "Verifica los detalles." }; }
 
         let onChainResult = null;

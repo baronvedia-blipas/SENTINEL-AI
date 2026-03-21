@@ -27,7 +27,7 @@ contract VulnerableBank {
     }
 }`;
 
-export default function ContractAnalyzer({ onAnalysis }) {
+export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
   const [sourceCode, setSourceCode] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function ContractAnalyzer({ onAnalysis }) {
           "Content-Type": "application/json",
           "X-402-Payment": "demo-payment-token",
         },
-        body: JSON.stringify({ sourceCode }),
+        body: JSON.stringify({ sourceCode, lang }),
       });
       const data = await res.json();
       setResult(data);
