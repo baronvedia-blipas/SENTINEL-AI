@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../i18n.js";
 
 const SCENARIOS = [
   {
@@ -43,7 +44,7 @@ contract Unsafe {
   },
 ];
 
-export default function AgentGuard({ onAnalysis }) {
+export default function AgentGuard({ onAnalysis, lang = "es" }) {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,10 +90,9 @@ export default function AgentGuard({ onAnalysis }) {
       )}
 
       <div>
-        <h2 className="text-lg font-semibold">AI Agent Guard (ERC-8004)</h2>
+        <h2 className="text-lg font-semibold">{t(lang, "guardTitle")}</h2>
         <p className="text-sm text-[var(--text-secondary)] mt-1">
-          Sentinel acts as a security guard for AI agents. When an agent wants to execute an action,
-          it passes through Sentinel first. Risky actions are BLOCKED and logged on-chain.
+          {t(lang, "guardDesc")}
         </p>
       </div>
 
@@ -112,7 +112,9 @@ export default function AgentGuard({ onAnalysis }) {
             <div className="text-2xl mb-2">
               {i === 0 ? "📝" : i === 1 ? "💰" : "✅"}
             </div>
-            <h3 className="font-medium text-sm mb-1">{scenario.label}</h3>
+            <h3 className="font-medium text-sm mb-1">
+              {i === 0 ? t(lang, "deployVulnerable") : i === 1 ? t(lang, "unlimitedApprove") : t(lang, "safeTransfer")}
+            </h3>
             <p className="text-xs text-[var(--text-secondary)]">
               {scenario.action.actionType}
             </p>
@@ -128,7 +130,7 @@ export default function AgentGuard({ onAnalysis }) {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <span>Sentinel is evaluating the action...</span>
+            <span>{t(lang, "evaluating")}</span>
           </div>
         </div>
       )}
@@ -148,7 +150,7 @@ export default function AgentGuard({ onAnalysis }) {
             <h3 className={`text-3xl font-black tracking-wider ${
               result.decision === "BLOCK" ? "text-red-400" : "text-green-400"
             }`}>
-              {result.decision === "BLOCK" ? "ACTION BLOCKED" : "ACTION ALLOWED"}
+              {result.decision === "BLOCK" ? t(lang, "actionBlocked") : t(lang, "actionAllowed")}
             </h3>
             <p className="text-sm text-[var(--text-secondary)] mt-2">{result.reason}</p>
             <span className={`inline-block mt-3 px-3 py-1 rounded-lg text-sm font-medium risk-${result.riskLevel.toLowerCase()}`}>
@@ -175,14 +177,14 @@ export default function AgentGuard({ onAnalysis }) {
             <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full bg-green-400 pulse-dot" />
-                <h3 className="font-semibold text-sm text-green-300">Logged on Avalanche Fuji</h3>
+                <h3 className="font-semibold text-sm text-green-300">{t(lang, "loggedOnChain")}</h3>
               </div>
               <a href={result.onChain.explorerUrl} target="_blank" rel="noopener noreferrer"
                 className="text-blue-400 hover:underline font-mono text-xs">
                 {result.onChain.txHash}
               </a>
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                Entry #{result.onChain.entryId} — Reputation updated
+                Entry #{result.onChain.entryId} — {t(lang, "reputationUpdated")}
               </p>
             </div>
           )}

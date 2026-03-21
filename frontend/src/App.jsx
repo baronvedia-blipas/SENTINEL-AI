@@ -192,7 +192,7 @@ export default function App() {
           {activeTab === "demo" && <DemoRunner onComplete={refreshAll} lang={lang} />}
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
-          {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} />}
+          {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "profile" && <AgentProfile />}
           {activeTab === "log" && <AuditLog />}
         </div>

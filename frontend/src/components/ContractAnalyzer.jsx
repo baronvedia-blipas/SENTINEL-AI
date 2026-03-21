@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../i18n.js";
 
 const EXAMPLE_VULNERABLE = `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -63,30 +64,30 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
       {/* Left: Input */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Smart Contract Analyzer</h2>
+          <h2 className="text-lg font-semibold">{t(lang, "contractTitle")}</h2>
           <button
             onClick={() => setSourceCode(EXAMPLE_VULNERABLE)}
             className="text-xs px-3 py-1 rounded bg-[var(--bg-card)] border border-[var(--border-color)] hover:bg-[var(--bg-card-hover)] transition-colors"
           >
-            Load Example
+            {t(lang, "loadExample")}
           </button>
         </div>
 
         <p className="text-sm text-[var(--text-secondary)]">
-          Paste Solidity code to detect reentrancy, unlimited approvals, tx.origin abuse, and more.
+          {t(lang, "contractDesc")}
         </p>
 
         <textarea
           value={sourceCode}
           onChange={(e) => setSourceCode(e.target.value)}
-          placeholder="// Paste your Solidity code here..."
+          placeholder={t(lang, "pasteCode")}
           className="w-full h-80 p-4 code-block resize-none focus:outline-none focus:border-blue-500/50 text-sm text-green-300"
           spellCheck={false}
         />
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-[var(--text-secondary)]">
-            Cost: $0.001 USDC via x402
+            {t(lang, "cost")}: $0.001 USDC {t(lang, "via")} x402
           </span>
           <button
             onClick={analyze}
@@ -96,9 +97,9 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
             {loading ? (
               <span className="flex items-center gap-2">
                 <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                Analyzing...
+                {t(lang, "analyzing")}
               </span>
-            ) : "Analyze Contract"}
+            ) : t(lang, "analyzeBtn")}
           </button>
         </div>
       </div>
@@ -137,7 +138,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
             {/* Findings */}
             {result.findings?.length > 0 && (
               <div className="space-y-3">
-                <h3 className="font-semibold text-sm">Vulnerabilities Found</h3>
+                <h3 className="font-semibold text-sm">{t(lang, "findings")}</h3>
                 {result.findings.map((f, i) => (
                   <div key={i} className="p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] card-glow">
                     <div className="flex items-center gap-2 mb-2">
@@ -160,7 +161,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
             {result.aiExplanation && (
               <div className="p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)]">
                 <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <span>🤖</span> AI Analysis
+                  <span>🤖</span> {t(lang, "aiAnalysis")}
                   {result.aiExplanation._provider && result.aiExplanation._provider !== "fallback" ? (
                     <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/15 text-green-400 border border-green-500/20">
                       {result.aiExplanation._provider}
@@ -177,7 +178,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
 
                 {result.aiExplanation.fixes?.length > 0 && (
                   <div className="space-y-2 mb-3">
-                    <h4 className="text-xs font-semibold text-blue-300">Suggested Fixes:</h4>
+                    <h4 className="text-xs font-semibold text-blue-300">{t(lang, "suggestedFixes")}:</h4>
                     {result.aiExplanation.fixes.map((fix, i) => (
                       <div key={i} className="text-sm">
                         <span className="text-green-400 font-medium">{fix.vulnerability}:</span>{" "}
@@ -203,7 +204,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
             {/* On-chain proof */}
             {result.onChain && (
               <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/20">
-                <h3 className="font-semibold text-sm mb-2 text-green-300">On-Chain Record</h3>
+                <h3 className="font-semibold text-sm mb-2 text-green-300">{t(lang, "onChainRecord")}</h3>
                 <div className="space-y-1 text-sm">
                   <p>
                     <span className="text-[var(--text-secondary)]">TX Hash: </span>

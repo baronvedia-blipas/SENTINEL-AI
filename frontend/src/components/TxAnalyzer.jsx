@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { t } from "../i18n.js";
 
 const PRESETS = [
   {
@@ -75,9 +76,9 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Left: Input */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Transaction Risk Analyzer</h2>
+        <h2 className="text-lg font-semibold">{t(lang, "txTitle")}</h2>
         <p className="text-sm text-[var(--text-secondary)]">
-          Analyze transactions before execution. Detects unlimited approvals, high-value transfers, and unknown contracts.
+          {t(lang, "txDesc")}
         </p>
 
         {/* Presets */}
@@ -96,7 +97,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
         {/* Form */}
         <div className="space-y-3">
           <div>
-            <label className="block text-xs text-[var(--text-secondary)] mb-1">Transaction Type</label>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1">{t(lang, "txType")}</label>
             <select
               value={txData.type}
               onChange={(e) => setTxData({ ...txData, type: e.target.value })}
@@ -109,7 +110,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
           </div>
 
           <div>
-            <label className="block text-xs text-[var(--text-secondary)] mb-1">Amount</label>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1">{t(lang, "amount")}</label>
             <input
               type="text"
               value={txData.amount}
@@ -120,7 +121,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
           </div>
 
           <div>
-            <label className="block text-xs text-[var(--text-secondary)] mb-1">Contract Address</label>
+            <label className="block text-xs text-[var(--text-secondary)] mb-1">{t(lang, "contractAddress")}</label>
             <input
               type="text"
               value={txData.contractAddress}
@@ -132,7 +133,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
 
           {txData.type === "approve" && (
             <div>
-              <label className="block text-xs text-[var(--text-secondary)] mb-1">Spender Address</label>
+              <label className="block text-xs text-[var(--text-secondary)] mb-1">{t(lang, "spenderAddress")}</label>
               <input
                 type="text"
                 value={txData.spender}
@@ -145,7 +146,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
 
           {txData.type === "transfer" && (
             <div>
-              <label className="block text-xs text-[var(--text-secondary)] mb-1">Recipient (to)</label>
+              <label className="block text-xs text-[var(--text-secondary)] mb-1">{t(lang, "recipient")}</label>
               <input
                 type="text"
                 value={txData.to}
@@ -158,13 +159,13 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-xs text-[var(--text-secondary)]">Cost: $0.0005 USDC via x402</span>
+          <span className="text-xs text-[var(--text-secondary)]">{t(lang, "cost")}: $0.0005 USDC {t(lang, "via")} x402</span>
           <button
             onClick={analyze}
             disabled={loading || !txData.amount}
             className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm transition-colors"
           >
-            {loading ? "Analyzing..." : "Analyze Transaction"}
+            {loading ? t(lang, "analyzing") : t(lang, "analyzeTransaction")}
           </button>
         </div>
       </div>
