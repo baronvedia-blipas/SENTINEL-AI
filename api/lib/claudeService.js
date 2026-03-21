@@ -81,7 +81,7 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
       const cleaned = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
 
       // Strategy 1: Direct parse
-      try { return JSON.parse(cleaned); } catch {}
+      try { const p = JSON.parse(cleaned); p._provider = "gemini-2.5-flash"; return p; } catch {}
 
       // Strategy 2: Find JSON object with balanced braces
       let depth = 0, start = -1;
@@ -94,6 +94,7 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
             const parsed = JSON.parse(cleaned.substring(start, i + 1));
             if (parsed.explanation) {
               console.log("[Gemini] Parsed OK");
+              parsed._provider = "gemini-2.5-flash";
               return parsed;
             }
           } catch {}
@@ -110,6 +111,7 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
           explanation: explanationMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"'),
           fixes: analysis.findings.map(f => ({ vulnerability: f.name, fix: f.description })),
           overall_recommendation: recommendationMatch?.[1] || "Se recomienda corregir las vulnerabilidades.",
+          _provider: "gemini-2.5-flash",
         };
       }
 
@@ -149,17 +151,18 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
         { tools: [TOOL], tool_choice: { type: "tool", name: "format_security_report" } }
       );
       const toolUse = response.content.find((b) => b.type === "tool_use");
-      if (toolUse) return toolUse.input;
+      if (toolUse) return { ...toolUse.input, _provider: "claude-sonnet-4" };
     } catch (err) {
       console.error("[Claude]", err.message);
     }
   }
 
-  // Fallback
+  // Fallback — no AI used
   return {
     explanation: `Se encontraron ${analysis.findings.length} vulnerabilidades con nivel de riesgo ${analysis.riskLevel}.`,
     fixes: analysis.findings.map((f) => ({ vulnerability: f.name, fix: f.description })),
     overall_recommendation: "Se recomienda corregir las vulnerabilidades antes de deployar.",
+    _provider: "fallback",
   };
 }
 
@@ -192,14 +195,14 @@ Responde en español, claro y directo. Máximo 3 oraciones.`;
   try {
     if (useGemini) {
       const text = await geminiChat(prompt, 512);
-      return { explanation: text, recommendation: analysis.findings[0].recommendation || "Revisa los detalles." };
+      return { explanation: text, recommendation: analysis.findings[0].recommendation || "Revisa los detalles.", _provider: "gemini-2.5-flash" };
     } else {
       const response = await claudeChat([{ role: "user", content: prompt }], { maxTokens: 512 });
-      return { explanation: response.content[0].text, recommendation: analysis.findings[0].recommendation || "Revisa los detalles." };
+      return { explanation: response.content[0].text, recommendation: analysis.findings[0].recommendation || "Revisa los detalles.", _provider: "claude-sonnet-4" };
     }
   } catch (err) {
     console.error("[AI]", err.message);
-    return { explanation: analysis.summary, recommendation: "Verifica los detalles de la transacción." };
+    return { explanation: analysis.summary, recommendation: "Verifica los detalles de la transacción.", _provider: "fallback" };
   }
 }
 

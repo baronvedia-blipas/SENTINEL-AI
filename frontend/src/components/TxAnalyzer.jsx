@@ -201,7 +201,18 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
 
             {result.aiExplanation && (
               <div className="p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)]">
-                <h3 className="font-semibold text-sm mb-2">🤖 AI Explanation</h3>
+                <h3 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <span>🤖</span> AI Explanation
+                  {result.aiExplanation._provider && result.aiExplanation._provider !== "fallback" ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/15 text-green-400 border border-green-500/20">
+                      {result.aiExplanation._provider}
+                    </span>
+                  ) : result.aiExplanation._provider === "fallback" ? (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
+                      rule-based
+                    </span>
+                  ) : null}
+                </h3>
                 <p className="text-sm text-[var(--text-secondary)]">{result.aiExplanation.explanation}</p>
               </div>
             )}
