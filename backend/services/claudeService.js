@@ -7,7 +7,7 @@ const useGemini = !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !==
 
 // ── Gemini helper ──
 async function geminiChat(prompt, maxTokens = 1024) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -18,7 +18,10 @@ async function geminiChat(prompt, maxTokens = 1024) {
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  // Gemini 2.5 may return multiple parts (thinking + text), get the last text part
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const textPart = parts.filter(p => p.text).pop();
+  return textPart?.text || "";
 }
 
 // ── Claude helper ──
@@ -72,12 +75,47 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
 
   if (useGemini) {
     try {
-      const text = await geminiChat(prompt);
-      // Extract JSON from response
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) return JSON.parse(jsonMatch[0]);
+      const text = await geminiChat(prompt, 2048);
+      console.log("[Gemini] Response length:", text.length, "chars");
+      // Try multiple parse strategies
+      const cleaned = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+
+      // Strategy 1: Direct parse
+      try { return JSON.parse(cleaned); } catch {}
+
+      // Strategy 2: Find JSON object with balanced braces
+      let depth = 0, start = -1;
+      for (let i = 0; i < cleaned.length; i++) {
+        if (cleaned[i] === "{" && start === -1) start = i;
+        if (cleaned[i] === "{") depth++;
+        if (cleaned[i] === "}") depth--;
+        if (depth === 0 && start !== -1) {
+          try {
+            const parsed = JSON.parse(cleaned.substring(start, i + 1));
+            if (parsed.explanation) {
+              console.log("[Gemini] Parsed OK");
+              return parsed;
+            }
+          } catch {}
+          start = -1;
+        }
+      }
+
+      // Strategy 3: Extract fields manually
+      const explanationMatch = cleaned.match(/"explanation"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      const recommendationMatch = cleaned.match(/"overall_recommendation"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+      if (explanationMatch) {
+        console.log("[Gemini] Manual extract OK");
+        return {
+          explanation: explanationMatch[1].replace(/\\n/g, "\n").replace(/\\"/g, '"'),
+          fixes: analysis.findings.map(f => ({ vulnerability: f.name, fix: f.description })),
+          overall_recommendation: recommendationMatch?.[1] || "Se recomienda corregir las vulnerabilidades.",
+        };
+      }
+
+      console.log("[Gemini] Could not parse response");
     } catch (err) {
-      console.error("[Gemini]", err.message);
+      console.error("[Gemini] Error:", err.message);
     }
   } else {
     try {
