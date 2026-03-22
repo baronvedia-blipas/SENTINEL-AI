@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"hardcoded\\\\|FIXME\\\\|TODO\\\\|XXX\\\\|HACK\\\\|BUG\" /c/Alephhackathon/sentinel-ai --include=*.jsx --include=*.js)"
+    ]
+  }
+}

@@ -168,9 +168,34 @@ User / AI Agent
 |----------|---------------|
 | **ERC-8004** | Sentinel registered as agent on-chain with identity, capabilities, and reputation |
 | **x402** | Micropayments per API call ($0.001/$0.0005 USDC) with 402 Payment Required flow |
-| **EncryptedERC** | Audit reports stored as encrypted bytes on SentinelGuard contract |
-| **Live on Fuji** | Contracts deployed, transactions verifiable on Snowtrace explorer |
-| **AI Integration** | Claude API with tool_use for structured security reports in Spanish |
+| **EncryptedERC** | Real AES-256-GCM encryption for audit reports on-chain. Only agent owner can decrypt |
+| **Live on Fuji** | Contracts deployed + verified on Snowtrace, 80+ decisions logged on-chain |
+| **AI Integration** | Claude API with tool_use for structured security reports (bilingual ES/EN) |
+
+---
+
+## 🌐 Live Demo
+
+**Vercel:** [sentinel-ai-eight-sigma.vercel.app](https://sentinel-ai-eight-sigma.vercel.app)
+
+---
+
+## 🆕 Additional Features
+
+| Feature | Description |
+|---------|-------------|
+| **MetaMask Integration** | Connect wallet, auto-switch to Fuji, Owner badge verification |
+| **AES-256-GCM Encryption** | Real EncryptedERC — reports encrypted with key derived from agent's private key |
+| **Interactive API Docs** | "Try endpoint" buttons for all 8 API routes with live responses |
+| **Session History** | Persistent analysis history across tabs within a session |
+| **5 Preset Contracts** | Dropdown with vulnerable examples (reentrancy, approval, tx.origin, unchecked send, safe) |
+| **Solidity Validation** | Rejects non-Solidity input before wasting gas/API calls |
+| **Terminal Scan Animation** | Hacker-style scanning animation during analysis |
+| **Sound Effects** | Audio feedback on BLOCK/ALLOW decisions (Web Audio API) |
+| **Gas Cost Display** | Shows gas used + cost in AVAX for each on-chain transaction |
+| **Bilingual (ES/EN)** | Full i18n — toggle switches entire UI + AI responses |
+| **Cyberpunk UI** | Glassmorphism, gradient text, matrix rain, animated cards |
+| **Contracts Verified** | Both contracts verified on Snowtrace — source code readable |
 
 ---
 

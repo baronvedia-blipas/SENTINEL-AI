@@ -17,12 +17,25 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-const { analyzeContract } = require("./analyzers/contractAnalyzer");
-const { analyzeTransaction } = require("./analyzers/txAnalyzer");
-const { evaluateAction } = require("./analyzers/agentGuard");
-const { explainContractAnalysis, explainTransactionRisk } = require("./services/claudeService");
-const { logDecisionOnChain, updateReputation, getAgentReputation, getAgentIdentity, getRecentAuditLog, getBalance } = require("./services/avalancheService");
-const { x402PaymentMiddleware, getPricing } = require("./services/x402Middleware");
+const { analyzeContract } = require("../api/lib/contractAnalyzer");
+const { analyzeTransaction } = require("../api/lib/txAnalyzer");
+const { evaluateAction } = require("../api/lib/agentGuard");
+const { explainContractAnalysis, explainTransactionRisk } = require("../api/lib/claudeService");
+const { encryptReport } = require("../api/lib/encryptionService");
+const { logDecisionOnChain, updateReputation, getAgentReputation, getAgentIdentity, getRecentAuditLog, getBalance } = require("../api/lib/avalancheService");
+
+// Simple x402 middleware (inline — original was deleted)
+const x402PaymentMiddleware = (cost) => (req, res, next) => {
+  if (!req.headers["x-402-payment"]) {
+    return res.status(402).json({ error: "Payment Required", protocol: "x402", pricing: { cost, currency: "USDC" } });
+  }
+  next();
+};
+const getPricing = () => [
+  { endpoint: "/api/analyze/contract", cost: "0.001", currency: "USDC" },
+  { endpoint: "/api/analyze/transaction", cost: "0.0005", currency: "USDC" },
+  { endpoint: "/api/agent/evaluate", cost: "0.001", currency: "USDC" },
+];
 
 const app = express();
 app.use(cors());
