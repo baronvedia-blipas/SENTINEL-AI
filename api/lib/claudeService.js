@@ -45,6 +45,7 @@ async function explainContractAnalysis(sourceCode, analysis, lang = "es") {
   }
 
   const findingsText = analysis.findings
+    .slice(0, 5)  // Limit to 5 findings to avoid overwhelming the AI
     .map((f) => `- ${f.name} (${f.severity}): ${f.detail} [línea ${f.line}]`)
     .join("\n");
 
@@ -130,7 +131,14 @@ Responde en JSON estricto (sin markdown, sin code fences, solo JSON):
         };
       }
 
-      console.log("[Gemini] Could not parse response");
+      // Strategy 4: Use raw text as explanation (better than fallback)
+      console.log("[Gemini] Using raw text as explanation");
+      return {
+        explanation: cleaned.substring(0, 1500),
+        fixes: analysis.findings.map(f => ({ vulnerability: f.name, fix: f.description })),
+        overall_recommendation: isEn ? "Fix all vulnerabilities before deploying." : "Se recomienda corregir las vulnerabilidades antes de deployar.",
+        _provider: "gemini-2.5-flash",
+      };
     } catch (err) {
       console.error("[Gemini] Error:", err.message);
     }
