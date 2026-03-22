@@ -1,7 +1,26 @@
 {
   "permissions": {
     "allow": [
-      "Bash(grep -r \"hardcoded\\\\|FIXME\\\\|TODO\\\\|XXX\\\\|HACK\\\\|BUG\" /c/Alephhackathon/sentinel-ai --include=*.jsx --include=*.js)"
+      "Bash(grep -r \"hardcoded\\\\|FIXME\\\\|TODO\\\\|XXX\\\\|HACK\\\\|BUG\" /c/Alephhackathon/sentinel-ai --include=*.jsx --include=*.js)",
+      "Bash(curl -s http://localhost:3001/api/health)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(node -e \"const d=require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\);const j=JSON.parse\\(d\\);console.log\\(''''Status:'''',j.status,''''Agent:'''',j.agent\\)\")",
+      "Bash(curl -s -X POST http://localhost:3001/api/analyze/contract -H \"Content-Type: application/json\" -d '{\"\"\"\"sourceCode\"\"\"\":\"\"\"\"pragma solidity ^0.8.0; contract X {}\"\"\"\"}')",
+      "Bash(node -e \"const d=require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\);const j=JSON.parse\\(d\\);console.log\\(''''Error:'''',j.error,''''Protocol:'''',j.protocol\\)\")",
+      "Bash(tasklist)",
+      "Bash(taskkill /F /PID 35152)",
+      "Bash(taskkill //F //PID 35152)",
+      "Bash(node -e \":*)",
+      "Bash(node -e \"require\\(''dotenv''\\).config\\(\\); const {encryptReport,decryptReport}=require\\(''./api/lib/encryptionService''\\); const report={test:''hello'',findings:[1,2,3]}; const enc=encryptReport\\(report\\); console.log\\(''Encrypted length:'',enc.encrypted.length\\); const dec=decryptReport\\(enc.encrypted\\); console.log\\(''Decrypted match:'',JSON.stringify\\(dec\\)===JSON.stringify\\(report\\)\\);\")",
+      "Bash(curl -s -X POST http://localhost:3001/api/analyze/contract -H \"Content-Type: application/json\" -H \"X-402-Payment: test\" -d '{\"\"\"\"sourceCode\"\"\"\":\"\"\"\"pragma solidity ^0.8.0; contract Unsafe { mapping\\(address=>uint256\\) public b; function w\\(\\) public { \\(bool s,\\)=msg.sender.call{value:b[msg.sender]}\\(\\\\\"\"\"\"\\\\\"\"\"\"\\); require\\(s\\); b[msg.sender]=0; } }\"\"\"\"}')",
+      "Bash(node -e \"const d=require\\(''''fs''''\\).readFileSync\\(0,''''utf8''''\\);const j=JSON.parse\\(d\\);console.log\\(''''Risk:'''',j.riskLevel,''''Findings:'''',j.findings?.length,''''OnChain:'''',!!j.onChain?.txHash\\)\")",
+      "Bash(node -e 'const d=require\\(\"\"\"\"fs\"\"\"\"\\).readFileSync\\(0,\"\"\"\"utf8\"\"\"\"\\);const j=JSON.parse\\(d\\);console.log\\(\"\"\"\"Risk:\"\"\"\",j.riskLevel,\"\"\"\"Findings:\"\"\"\",j.findings?.length,\"\"\"\"OnChain:\"\"\"\",Boolean\\(j.onChain?.txHash\\)\\)')",
+      "Bash(curl -s -X POST http://localhost:3001/api/analyze/contract -H \"Content-Type: application/json\" -H \"X-402-Payment: test\" -d '{\"\"\"\"sourceCode\"\"\"\":\"\"\"\"hello world not solidity\"\"\"\"}')",
+      "Bash(node -e 'const d=require\\(\"\"\"\"fs\"\"\"\"\\).readFileSync\\(0,\"\"\"\"utf8\"\"\"\"\\);const j=JSON.parse\\(d\\);console.log\\(\"\"\"\"Risk:\"\"\"\",j.riskLevel,\"\"\"\"Valid:\"\"\"\",j.valid\\)')",
+      "Bash(node -e ':*)",
+      "Bash(curl -s \"http://localhost:3001/api/audit-log?count=999999999\")",
+      "Bash(node -e 'const d=require\\(\"\"\"\"fs\"\"\"\"\\).readFileSync\\(0,\"\"\"\"utf8\"\"\"\"\\);const j=JSON.parse\\(d\\);console.log\\(\"\"\"\"Count:\"\"\"\",j.count,\"\"\"\"Error:\"\"\"\",j.error||\"\"\"\"none\"\"\"\"\\)')",
+      "Bash(taskkill //F //IM node.exe)"
     ]
   }
 }

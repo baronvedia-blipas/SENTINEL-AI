@@ -16,22 +16,30 @@ const VULNERABILITY_RULES = [
     severity: "HIGH",
     description: "External call detected before state variable update. An attacker could re-enter the function before state changes are applied.",
     detect: (code) => {
-      const lines = code.split("\n");
+      // Normalize: split by semicolons AND newlines to handle single-line code
+      const normalized = code.replace(/;/g, ";\n").replace(/\{/g, "{\n").replace(/\}/g, "\n}\n");
+      const lines = normalized.split("\n");
       const results = [];
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i].trim();
+        if (!line || line.startsWith("//") || line.startsWith("*")) continue;
+
         // Detect .call{value:, .send(, .transfer( patterns
         const hasExternalCall = /\.(call\{|call\(|send\(|transfer\()/.test(line);
         if (!hasExternalCall) continue;
 
         // Look ahead for state updates after the external call
-        for (let j = i + 1; j < Math.min(i + 10, lines.length); j++) {
+        for (let j = i + 1; j < Math.min(i + 15, lines.length); j++) {
           const nextLine = lines[j].trim();
+          if (!nextLine || nextLine.startsWith("//") || nextLine.startsWith("*") || nextLine === "}") continue;
+
           // State update patterns: variable = , mapping[x] = , balances[
-          if (/\w+\s*(\[.*\])?\s*=\s*[^=]/.test(nextLine) && !nextLine.startsWith("//") && !nextLine.startsWith("*")) {
+          if (/\w+\s*(\[.*\])?\s*=\s*[^=]/.test(nextLine)) {
+            // Find the actual line number in original code
+            const originalLine = code.substring(0, code.indexOf(line.substring(0, 20))).split("\n").length;
             results.push({
-              line: i + 1,
+              line: originalLine,
               code: line,
               detail: `State update at line ${j + 1} happens AFTER external call at line ${i + 1}`,
             });

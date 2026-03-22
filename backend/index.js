@@ -41,8 +41,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 
-// Apply x402 middleware to paid endpoints
-app.use(x402PaymentMiddleware);
+// x402 middleware applied per-route below (was incorrectly global)
 
 // ─── Health Check ──────────────────────────────────
 app.get("/api/health", async (req, res) => {
@@ -64,7 +63,7 @@ app.get("/api/health", async (req, res) => {
 });
 
 // ─── Contract Analysis ────────────────────────────
-app.post("/api/analyze/contract", async (req, res) => {
+app.post("/api/analyze/contract", x402PaymentMiddleware("0.001"), async (req, res) => {
   try {
     const { sourceCode } = req.body;
     if (!sourceCode) {
@@ -126,7 +125,7 @@ app.post("/api/analyze/contract", async (req, res) => {
 });
 
 // ─── Transaction Analysis ─────────────────────────
-app.post("/api/analyze/transaction", async (req, res) => {
+app.post("/api/analyze/transaction", x402PaymentMiddleware("0.0005"), async (req, res) => {
   try {
     const tx = req.body;
     if (!tx.type) {
@@ -180,7 +179,7 @@ app.post("/api/analyze/transaction", async (req, res) => {
 });
 
 // ─── Agent Guard ──────────────────────────────────
-app.post("/api/agent/evaluate", async (req, res) => {
+app.post("/api/agent/evaluate", x402PaymentMiddleware("0.001"), async (req, res) => {
   try {
     const action = req.body;
     if (!action.actionType) {

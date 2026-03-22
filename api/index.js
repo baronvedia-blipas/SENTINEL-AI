@@ -39,19 +39,29 @@ module.exports = async function handler(req, res) {
       }
 
       if (path === "audit-log") {
-        const count = parseInt(req.query?.count) || 10;
+        const count = Math.min(parseInt(req.query?.count) || 10, 50); // Cap at 50
         const entries = await getRecentAuditLog(count);
         return res.json({ entries, count: entries.length });
       }
 
       if (path === "decrypt") {
         const encrypted = req.query?.data;
+        const callerAddress = req.query?.address;
+        const agentOwner = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
+
         if (!encrypted) return res.status(400).json({ error: "data query param required" });
+        if (!callerAddress) return res.status(401).json({ error: "address query param required — only the agent owner can decrypt reports" });
+
+        // Verify caller is the agent owner
+        if (callerAddress.toLowerCase() !== agentOwner.toLowerCase()) {
+          return res.status(403).json({ decrypted: false, error: "Access denied — only the agent owner can decrypt reports.", requiredAddress: agentOwner });
+        }
+
         try {
           const report = decryptReport(decodeURIComponent(encrypted));
-          return res.json({ decrypted: true, algorithm: "AES-256-GCM", keyDerivation: "SHA-256(DEPLOYER_PRIVATE_KEY)", report });
+          return res.json({ decrypted: true, algorithm: "AES-256-GCM", owner: agentOwner, report });
         } catch (e) {
-          return res.status(403).json({ decrypted: false, error: "Decryption failed — only the agent owner can decrypt reports." });
+          return res.status(403).json({ decrypted: false, error: "Decryption failed — invalid encrypted data." });
         }
       }
 
@@ -100,6 +110,7 @@ module.exports = async function handler(req, res) {
       if (path === "analyze/contract") {
         const { sourceCode, lang } = req.body;
         if (!sourceCode) return res.status(400).json({ error: "sourceCode is required" });
+        if (sourceCode.length > 50000) return res.status(400).json({ error: "sourceCode too large (max 50KB)" });
         const payment = verifyPayment("0.001", "/api/analyze/contract");
         if (!payment.verified) return res.status(402).json(payment.response);
 
