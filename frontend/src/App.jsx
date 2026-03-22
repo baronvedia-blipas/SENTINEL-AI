@@ -17,7 +17,6 @@ const TAB_KEYS = [
   { id: "contract", key: "contractAnalyzer", icon: "◆" },
   { id: "transaction", key: "txAnalyzer", icon: "◇" },
   { id: "agent", key: "agentGuard", icon: "■" },
-  { id: "profile", key: "agentIdentity", icon: "●" },
   { id: "log", key: "auditLog", icon: "≡" },
 ];
 
@@ -190,7 +189,6 @@ export default function App() {
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
-          {activeTab === "profile" && <AgentProfile lang={lang} />}
           {activeTab === "log" && <AuditLog lang={lang} />}
         </div>
       </main>
