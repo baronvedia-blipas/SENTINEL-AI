@@ -55,8 +55,8 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b border-[var(--border-color)] px-6 py-3 bg-[var(--bg-card)]/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <header className="border-b border-[var(--border-color)] px-3 sm:px-6 py-2 sm:py-3 bg-[var(--bg-card)]/50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: Logo */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setShowLanding(true)}>
             <SentinelLogo size={28} glow={true} />
@@ -167,24 +167,25 @@ export default function App() {
       )}
 
       {/* Tabs */}
-      <nav className="border-b border-[var(--border-color)] px-6 bg-[var(--bg-dark)]">
-        <div className="max-w-7xl mx-auto flex gap-0">
+      <nav className="border-b border-[var(--border-color)] px-2 sm:px-6 bg-[var(--bg-dark)] overflow-x-auto">
+        <div className="max-w-7xl mx-auto flex gap-0 min-w-max sm:min-w-0">
           {TAB_KEYS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 text-xs font-mono font-medium transition-all border-b-2 ${
+              className={`px-2 sm:px-4 py-2.5 text-[10px] sm:text-xs font-mono font-medium transition-all border-b-2 whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)]"
               }`}>
-              <span className="mr-1.5 opacity-50">{tab.icon}</span>
-              {t(lang, tab.key)}
+              <span className="mr-1 sm:mr-1.5 opacity-50">{tab.icon}</span>
+              <span className="hidden sm:inline">{t(lang, tab.key)}</span>
+              <span className="sm:hidden">{t(lang, tab.key).split(" ")[0]}</span>
             </button>
           ))}
         </div>
       </nav>
 
       {/* Content */}
-      <main className="flex-1 px-6 py-6">
+      <main className="flex-1 px-3 sm:px-6 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto">
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}

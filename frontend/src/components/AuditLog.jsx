@@ -8,6 +8,7 @@ export default function AuditLog({ lang = "es" }) {
   const [reputation, setReputation] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [newEntry, setNewEntry] = useState(false);
+  const [filter, setFilter] = useState("ALL"); // ALL, BLOCK, ALLOW
   const prevCount = useRef(0);
 
   const refresh = async () => {
@@ -52,16 +53,27 @@ export default function AuditLog({ lang = "es" }) {
         </div>
       )}
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-lg font-semibold">{t(lang, "auditTitle")}</h2>
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)] cursor-pointer">
-            <input
-              type="checkbox"
-              checked={autoRefresh}
-              onChange={(e) => setAutoRefresh(e.target.checked)}
-              className="rounded"
-            />
+          {/* Filter buttons */}
+          <div className="flex rounded overflow-hidden border border-[var(--border-color)]">
+            {["ALL", "BLOCK", "ALLOW"].map((f) => (
+              <button key={f} onClick={() => setFilter(f)}
+                className={`px-2.5 py-1 text-[10px] font-mono font-bold transition-all ${
+                  filter === f
+                    ? f === "BLOCK" ? "bg-[var(--red-glow)] text-[var(--red)] border-[var(--red)]"
+                    : f === "ALLOW" ? "bg-[var(--accent-glow)] text-[var(--accent)]"
+                    : "bg-[var(--bg-card-hover)] text-[var(--text-primary)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}>
+                {f}
+              </button>
+            ))}
+          </div>
+
+          <label className="hidden sm:flex items-center gap-2 text-xs text-[var(--text-secondary)] cursor-pointer">
+            <input type="checkbox" checked={autoRefresh} onChange={(e) => setAutoRefresh(e.target.checked)} className="rounded" />
             {t(lang, "autoRefresh")}
           </label>
           <button onClick={refresh}
@@ -122,7 +134,7 @@ export default function AuditLog({ lang = "es" }) {
         </div>
       ) : (
         <div className="space-y-2">
-          {entries.map((entry, i) => (
+          {entries.filter(e => filter === "ALL" || e.decision === filter).map((entry, i) => (
             <div key={i} className={`p-4 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center gap-4 card-glow ${i === 0 && newEntry ? 'animate-pop' : ''}`}>
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg ${
                 entry.decision === "BLOCK" ? "bg-red-500/15 text-red-400" : "bg-green-500/15 text-green-400"

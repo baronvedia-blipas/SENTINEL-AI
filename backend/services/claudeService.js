@@ -39,22 +39,37 @@ async function claudeChat(messages, options = {}) {
 // ── Contract Analysis Explanation ──
 async function explainContractAnalysis(sourceCode, analysis, lang = "es") {
   if (analysis.findings.length === 0) {
-    return {
-      explanation: "El contrato analizado no presenta vulnerabilidades conocidas.",
-      fixes: [],
-      overall_recommendation: "El contrato parece seguro, pero se recomienda una auditoría profesional.",
-    };
+    return lang === "en"
+      ? { explanation: "The analyzed contract has no known vulnerabilities.", fixes: [], overall_recommendation: "The contract appears safe, but a professional audit is recommended." }
+      : { explanation: "El contrato analizado no presenta vulnerabilidades conocidas.", fixes: [], overall_recommendation: "El contrato parece seguro, pero se recomienda una auditoría profesional." };
   }
 
   const findingsText = analysis.findings
     .map((f) => `- ${f.name} (${f.severity}): ${f.detail} [línea ${f.line}]`)
     .join("\n");
 
-  const langInstruction = lang === "en"
-    ? "You are a smart contract security auditor. Analyze these vulnerabilities and generate a report in English."
-    : "Eres un auditor de seguridad de smart contracts. Analiza estas vulnerabilidades y genera un reporte en español.";
+  const isEn = lang === "en";
 
-  const prompt = `${langInstruction}
+  const prompt = isEn
+    ? `You are a smart contract security auditor. Analyze these vulnerabilities and generate a report ENTIRELY IN ENGLISH. Every field must be in English.
+
+RISK LEVEL: ${analysis.riskLevel}
+
+VULNERABILITIES:
+${findingsText}
+
+CODE:
+\`\`\`solidity
+${sourceCode.substring(0, 2000)}
+\`\`\`
+
+Respond in strict JSON only (no markdown, no code fences, just JSON):
+{
+  "explanation": "clear explanation in English, 2-3 paragraphs",
+  "fixes": [{"vulnerability": "name", "fix": "how to fix in English", "code_example": "corrected code"}],
+  "overall_recommendation": "general recommendation in English, 1-2 sentences"
+}`
+    : `Eres un auditor de seguridad de smart contracts. Analiza estas vulnerabilidades y genera un reporte COMPLETAMENTE EN ESPAÑOL. Cada campo debe estar en español.
 
 NIVEL DE RIESGO: ${analysis.riskLevel}
 
@@ -66,7 +81,7 @@ CÓDIGO:
 ${sourceCode.substring(0, 2000)}
 \`\`\`
 
-Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
+Responde en JSON estricto (sin markdown, sin code fences, solo JSON):
 {
   "explanation": "explicación clara en español, 2-3 párrafos",
   "fixes": [{"vulnerability": "nombre", "fix": "cómo arreglar en español", "code_example": "código corregido"}],
@@ -158,32 +173,35 @@ Responde en JSON estricto con esta estructura (sin markdown, solo JSON):
   }
 
   // Fallback — no AI used
-  return {
-    explanation: `Se encontraron ${analysis.findings.length} vulnerabilidades con nivel de riesgo ${analysis.riskLevel}.`,
-    fixes: analysis.findings.map((f) => ({ vulnerability: f.name, fix: f.description })),
-    overall_recommendation: "Se recomienda corregir las vulnerabilidades antes de deployar.",
-    _provider: "fallback",
-  };
+  return isEn
+    ? { explanation: `Found ${analysis.findings.length} vulnerabilities with risk level ${analysis.riskLevel}.`, fixes: analysis.findings.map((f) => ({ vulnerability: f.name, fix: f.description })), overall_recommendation: "Fix all vulnerabilities before deploying.", _provider: "fallback" }
+    : { explanation: `Se encontraron ${analysis.findings.length} vulnerabilidades con nivel de riesgo ${analysis.riskLevel}.`, fixes: analysis.findings.map((f) => ({ vulnerability: f.name, fix: f.description })), overall_recommendation: "Se recomienda corregir las vulnerabilidades antes de deployar.", _provider: "fallback" };
 }
 
 // ── Transaction Risk Explanation ──
 async function explainTransactionRisk(tx, analysis, lang = "es") {
   if (analysis.findings.length === 0) {
-    return {
-      explanation: "La transacción no presenta riesgos detectables.",
-      recommendation: "Puedes proceder con la transacción de forma segura.",
-    };
+    return lang === "en"
+      ? { explanation: "The transaction has no detectable risks.", recommendation: "You can proceed safely." }
+      : { explanation: "La transacción no presenta riesgos detectables.", recommendation: "Puedes proceder con la transacción de forma segura." };
   }
 
   const findingsText = analysis.findings
     .map((f) => `- ${f.name} (${f.severity}): ${f.warning}`)
     .join("\n");
 
-  const langPrompt = lang === "en"
-    ? "You are a Web3 security advisor. Explain in simple English (max 3 sentences) the risks:"
-    : "Eres un asesor de seguridad Web3. Explica en español simple (máximo 3 oraciones) los riesgos:";
+  const isEn = lang === "en";
 
-  const prompt = `${langPrompt}
+  const prompt = isEn
+    ? `You are a Web3 security advisor. Explain in simple English (max 3 sentences) the risks. RESPOND ENTIRELY IN ENGLISH.
+
+Type: ${tx.type} | Amount: ${tx.amount} | Contract: ${tx.contractAddress || "N/A"}
+
+Risks:
+${findingsText}
+
+Respond in English, clear and direct. Maximum 3 sentences.`
+    : `Eres un asesor de seguridad Web3. Explica en español simple (máximo 3 oraciones) los riesgos. RESPONDE COMPLETAMENTE EN ESPAÑOL.
 
 Tipo: ${tx.type} | Monto: ${tx.amount} | Contrato: ${tx.contractAddress || "N/A"}
 

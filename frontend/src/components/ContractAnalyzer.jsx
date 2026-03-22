@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { t } from "../i18n.js";
+import X402Tooltip from "./X402Tooltip.jsx";
 
 const EXAMPLE_VULNERABLE = `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -227,11 +228,7 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
 
             {/* Payment info */}
             {result.payment && (
-              <div className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
-                <span>{t(lang, "x402Payment")}:</span>
-                <span className="text-green-400">${result.payment.cost} {result.payment.currency}</span>
-                <span>{t(lang, "verified")}</span>
-              </div>
+              <X402Tooltip cost={result.payment.cost} lang={lang} />
             )}
           </>
         )}
