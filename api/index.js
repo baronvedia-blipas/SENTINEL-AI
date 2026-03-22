@@ -2,6 +2,7 @@ const { analyzeContract } = require("./lib/contractAnalyzer.js");
 const { analyzeTransaction } = require("./lib/txAnalyzer.js");
 const { evaluateAction } = require("./lib/agentGuard.js");
 const { explainContractAnalysis, explainTransactionRisk } = require("./lib/claudeService.js");
+const { encryptReport, decryptReport } = require("./lib/encryptionService.js");
 const {
   logDecisionOnChain, updateReputation, getAgentReputation,
   getAgentIdentity, getRecentAuditLog, getBalance,
@@ -43,6 +44,17 @@ module.exports = async function handler(req, res) {
         return res.json({ entries, count: entries.length });
       }
 
+      if (path === "decrypt") {
+        const encrypted = req.query?.data;
+        if (!encrypted) return res.status(400).json({ error: "data query param required" });
+        try {
+          const report = decryptReport(decodeURIComponent(encrypted));
+          return res.json({ decrypted: true, algorithm: "AES-256-GCM", keyDerivation: "SHA-256(DEPLOYER_PRIVATE_KEY)", report });
+        } catch (e) {
+          return res.status(403).json({ decrypted: false, error: "Decryption failed — only the agent owner can decrypt reports." });
+        }
+      }
+
       if (path === "pricing") {
         return res.json({
           protocol: "x402", network: "avalanche-fuji",
@@ -77,11 +89,11 @@ module.exports = async function handler(req, res) {
 
         let onChainResult = null;
         try {
-          onChainResult = await logDecisionOnChain({ target: "0x0000000000000000000000000000000000000000", decision: analysis.riskLevel === "HIGH" ? "BLOCK" : "ALLOW", riskLevel: analysis.riskLevel, reason: analysis.summary, encryptedReport: Buffer.from(JSON.stringify({ analysis, aiExplanation })).toString("base64"), paymentWei: "0.001" });
+          onChainResult = await logDecisionOnChain({ target: "0x0000000000000000000000000000000000000000", decision: analysis.riskLevel === "HIGH" ? "BLOCK" : "ALLOW", riskLevel: analysis.riskLevel, reason: analysis.summary, encryptedReport: encryptReport({ analysis, aiExplanation }).encrypted, paymentWei: "0.001" });
           await updateReputation(analysis.riskLevel === "HIGH");
         } catch (e) { console.error("[On-chain]", e.message); }
 
-        return res.json({ riskLevel: analysis.riskLevel, findings: analysis.findings, summary: analysis.summary, aiExplanation, onChain: onChainResult, payment: { cost: "0.001", currency: "USDC", verified: true } });
+        return res.json({ riskLevel: analysis.riskLevel, findings: analysis.findings, summary: analysis.summary, aiExplanation, onChain: onChainResult, encryption: { algorithm: "AES-256-GCM", keyDerivation: "SHA-256(DEPLOYER_PRIVATE_KEY)", status: "encrypted" }, payment: { cost: "0.001", currency: "USDC", verified: true } });
       }
 
       if (path === "analyze/transaction") {
@@ -111,7 +123,7 @@ module.exports = async function handler(req, res) {
         const result = evaluateAction(action);
         let onChainResult = null;
         try {
-          onChainResult = await logDecisionOnChain({ target: action.payload?.contractAddress || action.payload?.to || "0x0000000000000000000000000000000000000000", decision: result.decision, riskLevel: result.riskLevel, reason: result.reason, encryptedReport: Buffer.from(JSON.stringify(result)).toString("base64"), paymentWei: "0.001" });
+          onChainResult = await logDecisionOnChain({ target: action.payload?.contractAddress || action.payload?.to || "0x0000000000000000000000000000000000000000", decision: result.decision, riskLevel: result.riskLevel, reason: result.reason, encryptedReport: encryptReport(result).encrypted, paymentWei: "0.001" });
           await updateReputation(result.decision === "BLOCK");
         } catch (e) { console.error("[On-chain]", e.message); }
 

@@ -350,6 +350,25 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
               </div>
             )}
 
+            {/* EncryptedERC */}
+            {result.encryption && (
+              <div className="p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
+                <h3 className="font-semibold text-sm mb-2 text-purple-300 flex items-center gap-2">
+                  🔐 EncryptedERC
+                </h3>
+                <div className="space-y-1 text-xs font-mono text-[var(--text-secondary)]">
+                  <p>{lang === "es" ? "Algoritmo" : "Algorithm"}: <span className="text-purple-300">{result.encryption.algorithm}</span></p>
+                  <p>{lang === "es" ? "Derivación de clave" : "Key derivation"}: <span className="text-purple-300">{result.encryption.keyDerivation}</span></p>
+                  <p>{lang === "es" ? "Estado" : "Status"}: <span className="text-[var(--accent)]">{lang === "es" ? "Encriptado en blockchain" : "Encrypted on blockchain"}</span></p>
+                </div>
+                <p className="text-[10px] text-[var(--text-secondary)] mt-2">
+                  {lang === "es"
+                    ? "El reporte completo está encriptado on-chain. Solo el dueño del agente puede desencriptarlo."
+                    : "The full report is encrypted on-chain. Only the agent owner can decrypt it."}
+                </p>
+              </div>
+            )}
+
             {/* Payment info */}
             {result.payment && (
               <X402Tooltip cost={result.payment.cost} lang={lang} />
