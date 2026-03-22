@@ -137,7 +137,7 @@ export default function App() {
             {wallet.address ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-mono border-[var(--accent-border)] bg-[var(--accent-glow)] text-[var(--accent)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
+                  <span className="text-base">🦊</span>
                   {wallet.shortAddress}
                   {isOwner && (
                     <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[var(--accent)] text-[var(--bg-dark)]">
@@ -161,7 +161,8 @@ export default function App() {
               </div>
             ) : (
               <button onClick={wallet.connect} disabled={wallet.isConnecting || !wallet.hasMetaMask}
-                className="btn-hack px-3 py-1.5 rounded-lg text-xs font-mono font-bold">
+                className="btn-hack px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5">
+                <span className="text-base">🦊</span>
                 {wallet.isConnecting ? "..." : t(lang, "connectWallet")}
               </button>
             )}
