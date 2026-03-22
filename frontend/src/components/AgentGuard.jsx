@@ -71,9 +71,35 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
       const data = await res.json();
       setResult(data);
 
-      // Flash effect
+      // Flash effect + sound
       setScreenFlash(data.decision === "BLOCK" ? "block" : "allow");
       setTimeout(() => setScreenFlash(null), 1200);
+
+      // Audio feedback
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.value = 0.15;
+        if (data.decision === "BLOCK") {
+          osc.frequency.value = 220;
+          osc.type = "square";
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.4);
+        } else {
+          osc.frequency.value = 880;
+          osc.type = "sine";
+          gain.gain.setValueAtTime(0.1, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.25);
+        }
+      } catch {}
+
 
       onAnalysis?.();
     } catch (err) {
