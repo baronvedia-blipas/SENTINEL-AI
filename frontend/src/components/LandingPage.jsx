@@ -48,28 +48,28 @@ function TerminalTyping({ lines, speed = 40 }) {
 // Animated shield scanner
 function ShieldScanner() {
   return (
-    <div className="relative w-full h-32 rounded-lg bg-[#080c10] border border-[var(--border-color)] overflow-hidden">
+    <div className="relative w-full h-36 rounded-xl bg-[#060a0e] border border-[var(--border-color)] overflow-hidden glass-card">
       {/* Scan line */}
       <div className="absolute inset-0">
         <div className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-60"
           style={{ animation: "scanDown 2s ease-in-out infinite" }} />
       </div>
       {/* Code lines being scanned */}
-      <div className="p-3 space-y-1.5">
+      <div className="p-4 space-y-2">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-[var(--text-secondary)]">01</span>
-          <span className="text-[10px] font-mono text-[var(--red)]">function withdraw() public {"{"}</span>
+          <span className="text-[10px] font-mono text-[var(--text-secondary)] opacity-40 w-4 text-right">01</span>
+          <span className="text-[11px] font-mono text-[var(--red)]">function withdraw() public {"{"}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-[var(--text-secondary)]">02</span>
-          <span className="text-[10px] font-mono text-[var(--yellow)]">  msg.sender.call{"{"}value: bal{"}"}("");</span>
+          <span className="text-[10px] font-mono text-[var(--text-secondary)] opacity-40 w-4 text-right">02</span>
+          <span className="text-[11px] font-mono text-[var(--yellow)]">  msg.sender.call{"{"}value: bal{"}"}("");</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-mono text-[var(--text-secondary)]">03</span>
-          <span className="text-[10px] font-mono text-[var(--red)]">  balances[msg.sender] = 0; // ← AFTER call</span>
+          <span className="text-[10px] font-mono text-[var(--text-secondary)] opacity-40 w-4 text-right">03</span>
+          <span className="text-[11px] font-mono text-[var(--red)]">  balances[msg.sender] = 0; <span className="text-[var(--text-secondary)] opacity-50">// AFTER call</span></span>
         </div>
-        <div className="flex items-center gap-2 mt-2">
-          <span className="px-1.5 py-0.5 rounded text-[8px] font-mono font-bold bg-[var(--red-glow)] text-[var(--red)] border border-[rgba(255,51,85,0.3)]">
+        <div className="flex items-center gap-2 mt-3">
+          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-[var(--red-glow)] text-[var(--red)] border border-[rgba(255,51,85,0.3)] risk-pulse">
             REENTRANCY DETECTED
           </span>
         </div>
@@ -88,30 +88,36 @@ function DecisionAnimation() {
   }, []);
 
   return (
-    <div className="relative w-full h-32 rounded-lg bg-[#080c10] border border-[var(--border-color)] overflow-hidden flex items-center justify-center">
+    <div className="relative w-full h-36 rounded-xl bg-[#060a0e] border border-[var(--border-color)] overflow-hidden flex items-center justify-center glass-card">
       <div className="text-center animate-pop" key={phase}>
         {phase === 0 && (
           <div>
             <div className="text-xs font-mono text-[var(--text-secondary)] mb-2">AI Agent → approve(MAX_UINT256)</div>
-            <div className="text-xs font-mono text-[var(--yellow)]">analyzing...</div>
+            <div className="flex items-center gap-1.5 justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--yellow)] animate-bounce" />
+              <span className="text-xs font-mono text-[var(--yellow)]">analyzing...</span>
+            </div>
           </div>
         )}
         {phase === 1 && (
           <div>
-            <div className="text-2xl font-mono font-black text-[var(--red)] tracking-widest">BLOCKED</div>
-            <div className="text-[10px] font-mono text-[var(--text-secondary)] mt-1">unlimited approval → HIGH risk</div>
+            <div className="text-3xl font-mono font-black gradient-text-fire tracking-[0.15em]">BLOCKED</div>
+            <div className="text-[10px] font-mono text-[var(--text-secondary)] mt-2">unlimited approval → HIGH risk</div>
           </div>
         )}
         {phase === 2 && (
           <div>
             <div className="text-xs font-mono text-[var(--text-secondary)] mb-2">AI Agent → transfer(10 USDC)</div>
-            <div className="text-xs font-mono text-[var(--yellow)]">analyzing...</div>
+            <div className="flex items-center gap-1.5 justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--yellow)] animate-bounce" />
+              <span className="text-xs font-mono text-[var(--yellow)]">analyzing...</span>
+            </div>
           </div>
         )}
         {phase === 3 && (
           <div>
-            <div className="text-2xl font-mono font-black text-[var(--accent)] tracking-widest">ALLOWED</div>
-            <div className="text-[10px] font-mono text-[var(--text-secondary)] mt-1">safe transfer → LOW risk</div>
+            <div className="text-3xl font-mono font-black gradient-text tracking-[0.15em]">ALLOWED</div>
+            <div className="text-[10px] font-mono text-[var(--text-secondary)] mt-2">safe transfer → LOW risk</div>
           </div>
         )}
       </div>
@@ -140,20 +146,20 @@ function ReputationCounter() {
   }, []);
 
   return (
-    <div className="w-full h-32 rounded-lg bg-[#080c10] border border-[var(--border-color)] p-4 flex items-center justify-around">
+    <div className="w-full h-36 rounded-xl bg-[#060a0e] border border-[var(--border-color)] p-5 flex items-center justify-around glass-card">
       <div className="text-center">
-        <div className="text-2xl font-mono font-bold text-[var(--accent)]">{score}</div>
-        <div className="text-[9px] font-mono text-[var(--text-secondary)]">REPUTATION</div>
+        <div className="text-3xl font-mono font-bold gradient-text">{score}</div>
+        <div className="text-[9px] font-mono text-[var(--text-secondary)] mt-1">REPUTATION</div>
       </div>
-      <div className="w-px h-12 bg-[var(--border-color)]" />
+      <div className="w-px h-14 bg-gradient-to-b from-transparent via-[var(--border-color)] to-transparent" />
       <div className="text-center">
-        <div className="text-2xl font-mono font-bold text-[var(--red)]">{blocks}</div>
-        <div className="text-[9px] font-mono text-[var(--text-secondary)]">BLOCKED</div>
+        <div className="text-3xl font-mono font-bold text-[var(--red)]">{blocks}</div>
+        <div className="text-[9px] font-mono text-[var(--text-secondary)] mt-1">BLOCKED</div>
       </div>
-      <div className="w-px h-12 bg-[var(--border-color)]" />
+      <div className="w-px h-14 bg-gradient-to-b from-transparent via-[var(--border-color)] to-transparent" />
       <div className="text-center">
-        <div className="text-2xl font-mono font-bold text-[var(--accent)]">{allows}</div>
-        <div className="text-[9px] font-mono text-[var(--text-secondary)]">ALLOWED</div>
+        <div className="text-3xl font-mono font-bold text-[var(--accent)]">{allows}</div>
+        <div className="text-[9px] font-mono text-[var(--text-secondary)] mt-1">ALLOWED</div>
       </div>
     </div>
   );
@@ -162,17 +168,17 @@ function ReputationCounter() {
 const FEATURES_ES = [
   {
     title: "Analiza Smart Contracts",
-    desc: "Escanea código Solidity línea por línea. Detecta reentrancy, approvals ilimitados, tx.origin, y más — antes de que se deployen.",
+    desc: "Escanea codigo Solidity linea por linea. Detecta reentrancy, approvals ilimitados, tx.origin, y mas — antes de que se deployen.",
     tag: "CONTRACT ANALYZER",
   },
   {
     title: "Bloquea Acciones Riesgosas",
-    desc: "Cuando un AI agent intenta ejecutar algo peligroso, Sentinel lo intercepta y decide: BLOCK o ALLOW. Cada decisión se registra on-chain.",
+    desc: "Cuando un AI agent intenta ejecutar algo peligroso, Sentinel lo intercepta y decide: BLOCK o ALLOW. Cada decision se registra on-chain.",
     tag: "AGENT GUARD",
   },
   {
-    title: "Construye Reputación On-Chain",
-    desc: "Cada decisión correcta sube el score. Registrado como agente ERC-8004 en Avalanche. Reputación verificable por cualquiera.",
+    title: "Construye Reputacion On-Chain",
+    desc: "Cada decision correcta sube el score. Registrado como agente ERC-8004 en Avalanche. Reputacion verificable por cualquiera.",
     tag: "ERC-8004 IDENTITY",
   },
 ];
@@ -201,8 +207,8 @@ export default function LandingPage({ onEnter, lang = "es" }) {
 
   const terminalLines = lang === "es" ? [
     { prefix: "$ ", text: "sentinel analyze --contract vulnerable.sol", color: "text-[var(--text-primary)]" },
-    { prefix: "", text: "[SCAN] Reentrancy detectada en línea 13", color: "text-[var(--red)]" },
-    { prefix: "", text: "[BLOCK] Acción bloqueada → registrado en Fuji", color: "text-[var(--yellow)]" },
+    { prefix: "", text: "[SCAN] Reentrancy detectada en linea 13", color: "text-[var(--red)]" },
+    { prefix: "", text: "[BLOCK] Accion bloqueada → registrado en Fuji", color: "text-[var(--yellow)]" },
     { prefix: "", text: "[REP] Score actualizado: +10 puntos", color: "text-[var(--accent)]" },
     { prefix: "", text: "[x402] Pago recibido: $0.001 USDC", color: "text-[var(--accent)]" },
     { prefix: "$ ", text: "_", color: "text-[var(--text-primary)]" },
@@ -217,6 +223,9 @@ export default function LandingPage({ onEnter, lang = "es" }) {
 
   return (
     <div className="min-h-screen bg-[var(--bg-dark)] relative overflow-hidden">
+      {/* Particle grid bg */}
+      <div className="particle-grid" />
+
       {/* Grid bg */}
       <div className="absolute inset-0 opacity-[0.03]"
         style={{
@@ -224,31 +233,36 @@ export default function LandingPage({ onEnter, lang = "es" }) {
           backgroundSize: "40px 40px",
         }}
       />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[var(--accent)] opacity-[0.03] rounded-full blur-[120px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[var(--accent)] opacity-[0.04] rounded-full blur-[150px]" />
+      {/* Secondary glow */}
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[var(--blue)] opacity-[0.02] rounded-full blur-[120px]" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Hero */}
-        <section className="min-h-screen flex flex-col items-center justify-center text-center space-y-6">
-          <SentinelLogoLarge />
-          <h1 className="text-5xl md:text-7xl font-black text-[var(--accent)]"
-            style={{ textShadow: "0 0 40px var(--accent-glow)" }}>
+        <section className="min-h-screen flex flex-col items-center justify-center text-center space-y-8">
+          <div className="animate-float">
+            <SentinelLogoLarge />
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black gradient-text tracking-tight"
+            style={{ textShadow: "0 0 60px var(--accent-glow)" }}>
             SENTINEL AI
           </h1>
-          <div className="flex items-center gap-2">
-            <span className="h-px flex-1 max-w-16 bg-gradient-to-r from-transparent to-[var(--accent-border)]" />
+          <div className="flex items-center gap-3">
+            <span className="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-[var(--accent-border)]" />
             <p className="text-sm font-mono text-[var(--text-secondary)]">{t(lang, "landingSubtitle")}</p>
-            <span className="h-px flex-1 max-w-16 bg-gradient-to-l from-transparent to-[var(--accent-border)]" />
+            <span className="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-[var(--accent-border)]" />
           </div>
 
           {/* Terminal preview */}
-          <div className="w-full max-w-lg rounded-lg bg-[#080c10] border border-[var(--border-color)] overflow-hidden">
-            <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[var(--border-color)]">
+          <div className="w-full max-w-lg rounded-xl glass-card overflow-hidden hover:border-[var(--accent-border)] transition-all">
+            <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-[var(--border-color)]">
               <span className="w-2.5 h-2.5 rounded-full bg-[var(--red)]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[var(--yellow)]" />
               <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]" />
               <span className="text-[10px] font-mono text-[var(--text-secondary)] ml-2">sentinel-ai</span>
+              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
             </div>
-            <div className="p-4">
+            <div className="p-5 bg-[#060a0e]">
               <TerminalTyping lines={terminalLines} speed={35} />
             </div>
           </div>
@@ -256,33 +270,37 @@ export default function LandingPage({ onEnter, lang = "es" }) {
           {/* Tags */}
           <div className="flex flex-wrap justify-center gap-2">
             {["ERC-8004", "x402", "EncryptedERC", "Avalanche"].map((tag) => (
-              <span key={tag} className="px-3 py-1 rounded font-mono text-xs border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)]">
+              <span key={tag} className="px-3 py-1.5 rounded-lg font-mono text-xs border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)] hover:bg-[rgba(0,255,136,0.2)] transition-all cursor-default">
                 [{tag}]
               </span>
             ))}
           </div>
 
           {/* CTA button */}
-          <button onClick={onEnter} className="btn-primary px-10 py-3.5 rounded-lg text-base font-mono tracking-wider">
-            {t(lang, "enterApp")} →
+          <button onClick={onEnter} className="group btn-primary px-12 py-4 rounded-xl text-base font-mono tracking-wider relative overflow-hidden">
+            <span className="relative z-10 flex items-center gap-2">
+              {t(lang, "enterApp")}
+              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+            </span>
           </button>
 
           {/* Scroll indicator */}
-          <div className="pt-4 text-[var(--text-secondary)] text-xs font-mono animate-bounce">
-            ▼ scroll
+          <div className="pt-6 text-[var(--text-secondary)] text-xs font-mono animate-bounce flex flex-col items-center gap-1">
+            <span>scroll</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
           </div>
         </section>
 
         {/* Features */}
-        <section className="py-20 space-y-20">
+        <section className="py-24 space-y-24">
           {features.map((feature, i) => (
-            <div key={i} className={`flex flex-col md:flex-row items-center gap-8 ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}>
+            <div key={i} className={`flex flex-col md:flex-row items-center gap-10 ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}>
               {/* Text */}
               <div className="flex-1 space-y-4">
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold border border-[var(--accent-border)] text-[var(--accent)]">
+                <span className="inline-block px-3 py-1 rounded-lg text-[10px] font-mono font-bold border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)]">
                   {feature.tag}
                 </span>
-                <h2 className="text-2xl font-bold text-[var(--text-primary)]">{feature.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-primary)]">{feature.title}</h2>
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-mono">{feature.desc}</p>
               </div>
               {/* Animation */}
@@ -292,12 +310,15 @@ export default function LandingPage({ onEnter, lang = "es" }) {
         </section>
 
         {/* CTA */}
-        <section className="py-20 text-center space-y-6">
-          <h2 className="text-3xl font-bold font-mono text-[var(--accent)]">
-            {lang === "es" ? "¿Listo para proteger Web3?" : "Ready to protect Web3?"}
+        <section className="py-24 text-center space-y-8">
+          <h2 className="text-3xl md:text-4xl font-bold font-mono gradient-text">
+            {lang === "es" ? "Listo para proteger Web3?" : "Ready to protect Web3?"}
           </h2>
-          <button onClick={onEnter} className="btn-primary px-12 py-4 rounded-lg text-lg font-mono tracking-wider">
-            {t(lang, "enterApp")} →
+          <button onClick={onEnter} className="group btn-primary px-14 py-5 rounded-xl text-lg font-mono tracking-wider">
+            <span className="flex items-center gap-2">
+              {t(lang, "enterApp")}
+              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+            </span>
           </button>
           <div className="flex items-center justify-center gap-2 text-xs font-mono text-[var(--text-secondary)]">
             <span className="w-2 h-2 rounded-full bg-[var(--accent)] pulse-dot" />
@@ -306,7 +327,7 @@ export default function LandingPage({ onEnter, lang = "es" }) {
         </section>
 
         {/* Footer */}
-        <footer className="py-6 text-center text-[10px] font-mono text-[var(--text-secondary)] opacity-50">
+        <footer className="py-8 text-center text-[10px] font-mono text-[var(--text-secondary)] opacity-40">
           Avalanche — Aleph Hackathon 2026
         </footer>
       </div>

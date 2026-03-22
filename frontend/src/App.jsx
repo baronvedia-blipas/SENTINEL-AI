@@ -52,15 +52,18 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Matrix background */}
+      <div className="matrix-bg" />
+
       {/* Header */}
-      <header className="border-b border-[var(--border-color)] px-3 sm:px-6 py-2 sm:py-3 bg-[var(--bg-card)]/50 backdrop-blur-sm">
+      <header className="relative z-10 border-b border-[var(--border-color)] px-3 sm:px-6 py-2 sm:py-3 glass-card" style={{ borderRadius: 0 }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           {/* Left: Logo */}
           <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setShowLanding(true)}>
             <SentinelLogo size={28} glow={true} />
             <div>
-              <h1 className="text-base font-bold text-[var(--accent)] tracking-wider group-hover:text-white transition-colors">
+              <h1 className="text-base font-bold tracking-wider gradient-text group-hover:text-white transition-colors">
                 SENTINEL AI
               </h1>
               <p className="text-[10px] font-mono text-[var(--text-secondary)]">
@@ -70,23 +73,23 @@ export default function App() {
           </div>
 
           {/* Center: Stats */}
-          <div className="hidden md:flex items-center gap-1 font-mono text-xs">
+          <div className="hidden md:flex items-center gap-1.5 font-mono text-xs">
             {reputation && (
               <>
-                <div className="px-2.5 py-1 rounded bg-[var(--accent-glow)] border border-[var(--accent-border)]">
+                <div className="px-3 py-1.5 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-border)] animate-glowPulse">
                   <span className="text-[var(--text-secondary)]">REP </span>
                   <span className="text-[var(--accent)] font-bold">{reputation.score}</span>
                 </div>
-                <div className="px-2.5 py-1 rounded bg-[var(--red-glow)] border border-[rgba(255,51,85,0.25)]">
+                <div className="px-3 py-1.5 rounded-lg bg-[var(--red-glow)] border border-[rgba(255,51,85,0.25)]">
                   <span className="text-[var(--text-secondary)]">BLK </span>
                   <span className="text-[var(--red)] font-bold">{reputation.blockedThreats}</span>
                 </div>
-                <div className="px-2.5 py-1 rounded bg-[var(--accent-glow)] border border-[var(--accent-border)]">
+                <div className="px-3 py-1.5 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-border)]">
                   <span className="text-[var(--text-secondary)]">ALW </span>
                   <span className="text-[var(--accent)] font-bold">{reputation.allowedSafe}</span>
                 </div>
                 {health && (
-                  <div className="px-2.5 py-1 rounded bg-[rgba(255,204,0,0.08)] border border-[rgba(255,204,0,0.2)]">
+                  <div className="px-3 py-1.5 rounded-lg bg-[rgba(255,204,0,0.08)] border border-[rgba(255,204,0,0.2)]">
                     <span className="text-[var(--text-secondary)]">GAS </span>
                     <span className="text-[var(--yellow)] font-bold">{parseFloat(health.balance).toFixed(3)}</span>
                   </div>
@@ -100,12 +103,12 @@ export default function App() {
             {/* Status indicators */}
             <div className="hidden sm:flex items-center gap-2 mr-1">
               {agentInfo?.active && (
-                <span className="flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-mono border border-[var(--accent-border)] text-[var(--accent)]">
+                <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-mono border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
                   ERC-8004
                 </span>
               )}
-              <span className="flex items-center gap-1.5 px-2 py-1 rounded text-[10px] font-mono border border-[var(--red-glow)] text-[var(--red)]">
+              <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-mono border border-[var(--red-glow)] text-[var(--red)] bg-[var(--red-glow)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--red)] pulse-dot" />
                 FUJI
               </span>
@@ -113,8 +116,8 @@ export default function App() {
 
             {/* Lang */}
             <button onClick={toggleLang} disabled={langCooldown}
-              className={`px-2 py-1 rounded text-[10px] font-mono font-bold border transition-all ${
-                langCooldown ? "opacity-40 cursor-not-allowed" : "hover:border-[var(--accent-border)] hover:text-[var(--accent)]"
+              className={`px-2.5 py-1.5 rounded-lg text-[10px] font-mono font-bold border transition-all ${
+                langCooldown ? "opacity-40 cursor-not-allowed" : "hover:border-[var(--accent-border)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]"
               } border-[var(--border-color)] text-[var(--text-secondary)]`}>
               {lang === "es" ? "ES" : "EN"}
             </button>
@@ -122,32 +125,32 @@ export default function App() {
             {/* Wallet */}
             {wallet.address ? (
               <div className="relative group">
-                <button className="flex items-center gap-2 px-2.5 py-1.5 rounded border text-xs font-mono border-[var(--accent-border)] bg-[var(--accent-glow)] text-[var(--accent)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-mono border-[var(--accent-border)] bg-[var(--accent-glow)] text-[var(--accent)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
                   {wallet.shortAddress}
                   {isOwner && (
-                    <span className="px-1 py-0.5 rounded text-[8px] font-bold bg-[var(--accent)] text-[var(--bg-dark)]">
+                    <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-[var(--accent)] text-[var(--bg-dark)]">
                       OWNER
                     </span>
                   )}
                 </button>
-                <div className="absolute right-0 top-full mt-1 w-48 py-1 rounded bg-[var(--bg-card)] border border-[var(--border-color)] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <div className="absolute right-0 top-full mt-1 w-48 py-1 rounded-lg glass-card shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
                   <div className="px-3 py-2 border-b border-[var(--border-color)]">
                     <div className="text-[10px] font-mono text-[var(--text-secondary)] break-all">{wallet.address}</div>
                   </div>
                   <a href={`https://testnet.snowtrace.io/address/${wallet.address}`} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)]">
+                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] hover:bg-[var(--accent-glow)] transition-colors">
                     ⌘ {t(lang, "viewExplorer")}
                   </a>
                   <button onClick={wallet.disconnect}
-                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--red)] hover:bg-[var(--red-glow)] w-full text-left">
+                    className="flex items-center gap-2 px-3 py-2 text-xs text-[var(--red)] hover:bg-[var(--red-glow)] w-full text-left transition-colors">
                     ✕ {t(lang, "disconnect")}
                   </button>
                 </div>
               </div>
             ) : (
               <button onClick={wallet.connect} disabled={wallet.isConnecting || !wallet.hasMetaMask}
-                className="btn-hack px-3 py-1.5 rounded text-xs font-mono font-bold">
+                className="btn-hack px-3 py-1.5 rounded-lg text-xs font-mono font-bold">
                 {wallet.isConnecting ? "..." : t(lang, "connectWallet")}
               </button>
             )}
@@ -157,7 +160,7 @@ export default function App() {
 
       {/* Wrong network */}
       {wallet.address && !wallet.isOnFuji && (
-        <div className="bg-[var(--red-glow)] border-b border-[rgba(255,51,85,0.3)] px-6 py-2">
+        <div className="relative z-10 bg-[var(--red-glow)] border-b border-[rgba(255,51,85,0.3)] px-6 py-2">
           <div className="max-w-7xl mx-auto flex items-center justify-between text-xs font-mono">
             <span className="text-[var(--red)]">⚠ {t(lang, "wrongNetwork")}</span>
             <button onClick={wallet.connect} className="btn-hack px-3 py-1 rounded text-[10px]">{t(lang, "switchBtn")}</button>
@@ -166,16 +169,16 @@ export default function App() {
       )}
 
       {/* Tabs */}
-      <nav className="border-b border-[var(--border-color)] px-2 sm:px-6 bg-[var(--bg-dark)] overflow-x-auto">
+      <nav className="relative z-10 border-b border-[var(--border-color)] px-2 sm:px-6 bg-[var(--bg-dark)]/80 backdrop-blur-sm overflow-x-auto">
         <div className="max-w-7xl mx-auto flex gap-0 min-w-max sm:min-w-0">
           {TAB_KEYS.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`px-2 sm:px-4 py-2.5 text-[10px] sm:text-xs font-mono font-medium transition-all border-b-2 whitespace-nowrap ${
+              className={`tab-underline px-3 sm:px-5 py-3 text-[10px] sm:text-xs font-mono font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? "border-[var(--accent)] text-[var(--accent)]"
-                  : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-color)]"
+                  ? "tab-active text-[var(--accent)]"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}>
-              <span className="mr-1 sm:mr-1.5 opacity-50">{tab.icon}</span>
+              <span className={`mr-1.5 sm:mr-2 transition-all ${activeTab === tab.id ? "opacity-100" : "opacity-40"}`}>{tab.icon}</span>
               <span className="hidden sm:inline">{t(lang, tab.key)}</span>
               <span className="sm:hidden">{t(lang, tab.key).split(" ")[0]}</span>
             </button>
@@ -184,8 +187,8 @@ export default function App() {
       </nav>
 
       {/* Content */}
-      <main className="flex-1 px-3 sm:px-6 py-4 sm:py-6">
-        <div className="max-w-7xl mx-auto">
+      <main className="relative z-10 flex-1 px-3 sm:px-6 py-5 sm:py-8">
+        <div className="max-w-7xl mx-auto animate-slideUp">
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
@@ -194,13 +197,13 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[var(--border-color)] px-6 py-2">
+      <footer className="relative z-10 border-t border-[var(--border-color)] px-6 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-[10px] font-mono text-[var(--text-secondary)]">
           <span>{t(lang, "footer")}</span>
           <div className="flex items-center gap-3">
-            <span>[x402]</span>
-            <span>[EncryptedERC]</span>
-            <span>[ERC-8004]</span>
+            <span className="px-2 py-0.5 rounded border border-[var(--border-color)] hover:border-[var(--accent-border)] hover:text-[var(--accent)] transition-all cursor-default">[x402]</span>
+            <span className="px-2 py-0.5 rounded border border-[var(--border-color)] hover:border-[var(--accent-border)] hover:text-[var(--accent)] transition-all cursor-default">[EncryptedERC]</span>
+            <span className="px-2 py-0.5 rounded border border-[var(--border-color)] hover:border-[var(--accent-border)] hover:text-[var(--accent)] transition-all cursor-default">[ERC-8004]</span>
           </div>
         </div>
       </footer>
