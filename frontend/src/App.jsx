@@ -3,8 +3,6 @@ import ContractAnalyzer from "./components/ContractAnalyzer.jsx";
 import TxAnalyzer from "./components/TxAnalyzer.jsx";
 import AgentGuard from "./components/AgentGuard.jsx";
 import AuditLog from "./components/AuditLog.jsx";
-import DemoRunner from "./components/DemoRunner.jsx";
-import AgentProfile from "./components/AgentProfile.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import useWallet from "./hooks/useWallet.js";
 import { t } from "./i18n.js";
