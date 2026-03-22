@@ -81,6 +81,9 @@ async function logDecisionOnChain(data) {
     txHash: receipt.hash,
     entryId,
     explorerUrl: `https://testnet.snowtrace.io/tx/${receipt.hash}`,
+    gasUsed: receipt.gasUsed?.toString() || "N/A",
+    gasPrice: receipt.gasPrice ? (Number(receipt.gasPrice) / 1e9).toFixed(2) + " gwei" : "N/A",
+    gasCost: receipt.gasUsed && receipt.gasPrice ? (Number(receipt.gasUsed) * Number(receipt.gasPrice) / 1e18).toFixed(6) + " AVAX" : "N/A",
   };
 }
 

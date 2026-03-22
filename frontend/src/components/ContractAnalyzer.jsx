@@ -158,7 +158,7 @@ function LineNumbers({ code }) {
   );
 }
 
-export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
+export default function ContractAnalyzer({ onAnalysis, lang = "es", addToHistory }) {
   const [sourceCode, setSourceCode] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -181,6 +181,9 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
       });
       const data = await res.json();
       setResult(data);
+      if (data.riskLevel && data.riskLevel !== "INVALID") {
+        addToHistory?.({ type: "contract", riskLevel: data.riskLevel, summary: data.summary, decision: data.riskLevel === "HIGH" ? "BLOCK" : "ALLOW" });
+      }
       onAnalysis?.();
     } catch (err) {
       setError(err.message);
@@ -428,6 +431,14 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
                     <span className="text-[var(--text-secondary)]">{t(lang, "entryId")}: </span>
                     <span className="font-mono text-[var(--accent)]">{result.onChain.entryId}</span>
                   </p>
+                  {result.onChain.gasUsed && result.onChain.gasUsed !== "N/A" && (
+                    <p className="flex items-center gap-2 mt-1 pt-1 border-t border-[var(--border-color)]">
+                      <span className="text-[var(--text-secondary)]">Gas: </span>
+                      <span className="font-mono text-[var(--yellow)] text-xs">{Number(result.onChain.gasUsed).toLocaleString()}</span>
+                      <span className="text-[var(--text-secondary)]">|</span>
+                      <span className="font-mono text-[var(--yellow)] text-xs">{result.onChain.gasCost}</span>
+                    </p>
+                  )}
                 </div>
               </div>
             )}

@@ -49,7 +49,7 @@ const PRESETS = [
   },
 ];
 
-export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
+export default function TxAnalyzer({ onAnalysis, lang = "es", addToHistory }) {
   const [txData, setTxData] = useState({
     type: "approve",
     amount: "",
@@ -75,6 +75,7 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
       });
       const data = await res.json();
       setResult(data);
+      addToHistory?.({ type: "transaction", riskLevel: data.riskLevel, summary: data.summary, decision: data.riskLevel === "HIGH" ? "BLOCK" : "ALLOW" });
       onAnalysis?.();
     } catch (err) {
       setResult({ error: err.message });

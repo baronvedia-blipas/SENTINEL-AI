@@ -112,7 +112,7 @@ function ShieldScanOverlay({ lang }) {
   );
 }
 
-export default function AgentGuard({ onAnalysis, lang = "es" }) {
+export default function AgentGuard({ onAnalysis, lang = "es", addToHistory }) {
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -135,6 +135,7 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
       });
       const data = await res.json();
       setResult(data);
+      addToHistory?.({ type: "agent-guard", riskLevel: data.riskLevel, summary: data.reason, decision: data.decision });
 
       // Flash effect + sound
       setScreenFlash(data.decision === "BLOCK" ? "block" : "allow");
@@ -286,6 +287,11 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
               <p className="text-xs text-[var(--text-secondary)] mt-1.5">
                 Entry #{result.onChain.entryId} — {t(lang, "reputationUpdated")}
               </p>
+              {result.onChain.gasUsed && result.onChain.gasUsed !== "N/A" && (
+                <p className="text-xs font-mono text-[var(--yellow)] mt-1.5 pt-1.5 border-t border-[var(--border-color)]">
+                  Gas: {Number(result.onChain.gasUsed).toLocaleString()} | {result.onChain.gasCost}
+                </p>
+              )}
             </div>
           )}
 

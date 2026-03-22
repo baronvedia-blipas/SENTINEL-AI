@@ -3,6 +3,7 @@ import ContractAnalyzer from "./components/ContractAnalyzer.jsx";
 import TxAnalyzer from "./components/TxAnalyzer.jsx";
 import AgentGuard from "./components/AgentGuard.jsx";
 import AuditLog from "./components/AuditLog.jsx";
+import ApiDocs from "./components/ApiDocs.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import useWallet from "./hooks/useWallet.js";
 import { t } from "./i18n.js";
@@ -16,6 +17,7 @@ const TAB_KEYS = [
   { id: "transaction", key: "txAnalyzer", icon: "◇" },
   { id: "agent", key: "agentGuard", icon: "■" },
   { id: "log", key: "auditLog", icon: "≡" },
+  { id: "api", key: "apiDocs", icon: "⟩" },
 ];
 
 export default function App() {
@@ -26,6 +28,11 @@ export default function App() {
   const [health, setHealth] = useState(null);
   const [lang, setLang] = useState("es");
   const [langCooldown, setLangCooldown] = useState(false);
+  const [sessionHistory, setSessionHistory] = useState([]);
+
+  const addToHistory = (entry) => {
+    setSessionHistory(prev => [{ ...entry, timestamp: Date.now() }, ...prev].slice(0, 20));
+  };
 
   const wallet = useWallet();
   const isOwner = wallet.address?.toLowerCase() === AGENT_ADDRESS.toLowerCase();
@@ -100,9 +107,15 @@ export default function App() {
           <div className="flex items-center gap-2">
             {/* Status indicators */}
             <div className="hidden sm:flex items-center gap-2 mr-1">
-              {agentInfo?.active && (
-                <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-mono border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
+              {agentInfo?.active ? (
+                <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-mono border border-[var(--accent-border)] text-[var(--accent)] bg-[var(--accent-glow)] animate-glowPulse cursor-help"
+                  title={lang === "es" ? "Agente verificado on-chain en Avalanche Fuji" : "Agent verified on-chain on Avalanche Fuji"}>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                  ERC-8004
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-mono border border-[var(--border-color)] text-[var(--text-secondary)]">
+                  <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                   ERC-8004
                 </span>
               )}
@@ -187,11 +200,43 @@ export default function App() {
       {/* Content */}
       <main className="relative z-10 flex-1 px-3 sm:px-6 py-5 sm:py-8">
         <div className="max-w-7xl mx-auto animate-slideUp">
-          {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} />}
-          {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} />}
-          {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} />}
+          {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}
+          {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}
+          {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}
           {activeTab === "log" && <AuditLog lang={lang} />}
+          {activeTab === "api" && <ApiDocs lang={lang} />}
         </div>
+
+        {/* Session History Bar */}
+        {sessionHistory.length > 0 && activeTab !== "log" && activeTab !== "api" && (
+          <div className="max-w-7xl mx-auto mt-6">
+            <div className="p-4 rounded-xl glass-card">
+              <h3 className="text-xs font-mono font-bold text-[var(--text-secondary)] mb-3 flex items-center gap-2">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {lang === "es" ? "HISTORIAL DE SESIÓN" : "SESSION HISTORY"}
+                <span className="text-[var(--accent)]">({sessionHistory.length})</span>
+              </h3>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {sessionHistory.map((h, i) => (
+                  <div key={i} className="flex-shrink-0 px-3 py-2 rounded-lg bg-[var(--bg-dark)] border border-[var(--border-color)] text-xs font-mono min-w-[160px]">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                        h.decision === "BLOCK" ? "risk-high" : h.riskLevel === "HIGH" ? "risk-high" : h.riskLevel === "MEDIUM" ? "risk-medium" : "risk-low"
+                      }`}>
+                        {h.decision || h.riskLevel}
+                      </span>
+                      <span className="text-[var(--text-secondary)] text-[9px]">{h.type}</span>
+                    </div>
+                    <div className="text-[var(--text-secondary)] text-[9px] truncate">{h.summary}</div>
+                    <div className="text-[var(--accent)] text-[8px] mt-1 opacity-50">
+                      {new Date(h.timestamp).toLocaleTimeString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Footer */}
