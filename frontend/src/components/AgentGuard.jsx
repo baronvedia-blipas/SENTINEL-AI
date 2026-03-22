@@ -117,6 +117,57 @@ export default function AgentGuard({ onAnalysis, lang = "es", addToHistory }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [screenFlash, setScreenFlash] = useState(null);
+  const [mode, setMode] = useState("presets"); // "presets" | "custom" | "monitor"
+  const [customAction, setCustomAction] = useState({ actionType: "transfer", amount: "", to: "", contractAddress: "", spender: "", sourceCode: "" });
+  const [monitorLog, setMonitorLog] = useState([]);
+  const [monitoring, setMonitoring] = useState(false);
+  const monitorRef = useState(null);
+
+  // Auto-intercept simulation — generates random agent actions
+  const startMonitor = () => {
+    setMonitoring(true);
+    setMonitorLog([]);
+    const actions = [
+      { actionType: "approve", payload: { amount: "115792089237316195423570985008687907853269984665640564039457584007913129639935", contractAddress: "0xdead000000000000000000000000000000000000", spender: "0xmalicious000000000000000000000000000000" } },
+      { actionType: "transfer", payload: { amount: "10", to: "0xfriend00000000000000000000000000000000", contractAddress: "0x0000000000000000000000000000000000000000", threshold: "100" } },
+      { actionType: "deploy_contract", payload: { sourceCode: 'pragma solidity ^0.8.0;\ncontract Unsafe {\n  mapping(address => uint256) public b;\n  function withdraw() public {\n    (bool s,) = msg.sender.call{value: b[msg.sender]}("");\n    require(s);\n    b[msg.sender] = 0;\n  }\n}' } },
+      { actionType: "transfer", payload: { amount: "5", to: "0xsafe0000000000000000000000000000000000", contractAddress: "0x0000000000000000000000000000000000000000", threshold: "100" } },
+      { actionType: "approve", payload: { amount: "50", contractAddress: "0xtoken00000000000000000000000000000000", spender: "0xdex0000000000000000000000000000000000" } },
+    ];
+    let i = 0;
+    const interval = setInterval(async () => {
+      if (i >= actions.length) { clearInterval(interval); setMonitoring(false); return; }
+      const action = actions[i];
+      setMonitorLog(prev => [...prev, { action, status: "analyzing", timestamp: Date.now() }]);
+      try {
+        const res = await fetch("/api/agent/evaluate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-402-Payment": "demo-payment-token" },
+          body: JSON.stringify(action),
+        });
+        const data = await res.json();
+        setMonitorLog(prev => prev.map((item, idx) => idx === prev.length - 1 ? { ...item, result: data, status: "done" } : item));
+        addToHistory?.({ type: "auto-guard", riskLevel: data.riskLevel, summary: data.reason, decision: data.decision });
+        onAnalysis?.();
+      } catch (err) {
+        setMonitorLog(prev => prev.map((item, idx) => idx === prev.length - 1 ? { ...item, status: "error", error: err.message } : item));
+      }
+      i++;
+    }, 4000);
+    monitorRef[0] = interval;
+  };
+
+  const stopMonitor = () => {
+    if (monitorRef[0]) clearInterval(monitorRef[0]);
+    setMonitoring(false);
+  };
+
+  const evaluateCustom = async () => {
+    const action = customAction.actionType === "deploy_contract"
+      ? { actionType: "deploy_contract", payload: { sourceCode: customAction.sourceCode } }
+      : { actionType: customAction.actionType, payload: { amount: customAction.amount, to: customAction.to, contractAddress: customAction.contractAddress, spender: customAction.spender, threshold: "100" } };
+    await evaluate({ action });
+  };
 
   const evaluate = async (scenario) => {
     setSelectedScenario(scenario);
@@ -191,7 +242,160 @@ export default function AgentGuard({ onAnalysis, lang = "es", addToHistory }) {
         </p>
       </div>
 
-      {/* Scenarios */}
+      {/* Mode selector */}
+      <div className="flex rounded-lg overflow-hidden border border-[var(--border-color)] w-fit">
+        {[
+          { id: "presets", labelEs: "Escenarios", labelEn: "Scenarios" },
+          { id: "custom", labelEs: "Personalizado", labelEn: "Custom" },
+          { id: "monitor", labelEs: "Auto-Monitor", labelEn: "Auto-Monitor" },
+        ].map((m) => (
+          <button key={m.id} onClick={() => { setMode(m.id); setResult(null); }}
+            className={`px-4 py-2 text-xs font-mono font-bold transition-all ${
+              mode === m.id
+                ? "bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]"
+                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card)]"
+            }`}>
+            {lang === "es" ? m.labelEs : m.labelEn}
+          </button>
+        ))}
+      </div>
+
+      {/* === MONITOR MODE === */}
+      {mode === "monitor" && (
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl glass-card border-[var(--accent-border)]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {monitoring && <span className="w-2 h-2 rounded-full bg-[var(--accent)] pulse-dot" />}
+                <h3 className="font-mono text-sm font-bold text-[var(--accent)]">
+                  {lang === "es" ? "Monitoreo Autónomo" : "Autonomous Monitoring"}
+                </h3>
+              </div>
+              {!monitoring ? (
+                <button onClick={startMonitor} className="btn-primary px-4 py-2 rounded-lg text-xs font-mono">
+                  {lang === "es" ? "Iniciar Monitor" : "Start Monitor"}
+                </button>
+              ) : (
+                <button onClick={stopMonitor} className="px-4 py-2 rounded-lg text-xs font-mono bg-[var(--red-glow)] border border-[rgba(255,51,85,0.3)] text-[var(--red)]">
+                  {lang === "es" ? "Detener" : "Stop"}
+                </button>
+              )}
+            </div>
+            <p className="text-xs text-[var(--text-secondary)]">
+              {lang === "es"
+                ? "Sentinel intercepta automáticamente acciones de agentes IA. Cada acción es evaluada, bloqueada o permitida, y registrada on-chain sin intervención humana."
+                : "Sentinel automatically intercepts AI agent actions. Each action is evaluated, blocked or allowed, and logged on-chain without human intervention."}
+            </p>
+          </div>
+
+          {/* Monitor log */}
+          {monitorLog.length > 0 && (
+            <div className="space-y-2">
+              {monitorLog.map((entry, i) => (
+                <div key={i} className={`p-4 rounded-lg border animate-slideUp ${
+                  entry.status === "analyzing" ? "glass-card border-[var(--accent-border)] shield-scan" :
+                  entry.result?.decision === "BLOCK" ? "bg-[var(--red-glow)] border-[rgba(255,51,85,0.3)]" :
+                  "bg-[var(--accent-glow)] border-[var(--accent-border)]"
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-[var(--text-secondary)]">
+                        {lang === "es" ? "Agente" : "Agent"} → <span className="text-[var(--text-primary)]">{entry.action.actionType}</span>
+                      </span>
+                      {entry.status === "analyzing" && (
+                        <span className="text-xs font-mono text-[var(--yellow)] flex items-center gap-1">
+                          <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                          {lang === "es" ? "Analizando..." : "Analyzing..."}
+                        </span>
+                      )}
+                      {entry.result && (
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                          entry.result.decision === "BLOCK" ? "risk-high" : "risk-low"
+                        }`}>
+                          {entry.result.decision}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[9px] font-mono text-[var(--text-secondary)]">
+                      {new Date(entry.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                  {entry.result && (
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{entry.result.reason}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* === CUSTOM MODE === */}
+      {mode === "custom" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">
+                  {lang === "es" ? "Tipo de Acción" : "Action Type"}
+                </label>
+                <select value={customAction.actionType} onChange={(e) => setCustomAction({ ...customAction, actionType: e.target.value })}
+                  className="w-full p-2.5 rounded-lg input-glow text-sm font-mono">
+                  <option value="transfer">{t(lang, "transfer")}</option>
+                  <option value="approve">{t(lang, "approve")}</option>
+                  <option value="deploy_contract">Deploy Contract</option>
+                </select>
+              </div>
+              {customAction.actionType !== "deploy_contract" && (
+                <>
+                  <div>
+                    <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">{t(lang, "amount")}</label>
+                    <input type="text" value={customAction.amount} onChange={(e) => setCustomAction({ ...customAction, amount: e.target.value })}
+                      placeholder="100" className="w-full p-2.5 rounded-lg input-glow text-sm font-mono" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">{t(lang, "contractAddress")}</label>
+                    <input type="text" value={customAction.contractAddress} onChange={(e) => setCustomAction({ ...customAction, contractAddress: e.target.value })}
+                      placeholder="0x..." className="w-full p-2.5 rounded-lg input-glow text-sm font-mono text-xs" />
+                  </div>
+                  {customAction.actionType === "approve" && (
+                    <div>
+                      <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">{t(lang, "spenderAddress")}</label>
+                      <input type="text" value={customAction.spender} onChange={(e) => setCustomAction({ ...customAction, spender: e.target.value })}
+                        placeholder="0x..." className="w-full p-2.5 rounded-lg input-glow text-sm font-mono text-xs" />
+                    </div>
+                  )}
+                  {customAction.actionType === "transfer" && (
+                    <div>
+                      <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">{t(lang, "recipient")}</label>
+                      <input type="text" value={customAction.to} onChange={(e) => setCustomAction({ ...customAction, to: e.target.value })}
+                        placeholder="0x..." className="w-full p-2.5 rounded-lg input-glow text-sm font-mono text-xs" />
+                    </div>
+                  )}
+                </>
+              )}
+              {customAction.actionType === "deploy_contract" && (
+                <div>
+                  <label className="block text-xs text-[var(--text-secondary)] mb-1.5 font-mono">Solidity Code</label>
+                  <textarea value={customAction.sourceCode} onChange={(e) => setCustomAction({ ...customAction, sourceCode: e.target.value })}
+                    placeholder="pragma solidity ^0.8.0;..." className="w-full p-3 h-40 rounded-lg input-glow text-xs font-mono" />
+                </div>
+              )}
+              <button onClick={evaluateCustom} disabled={loading} className="btn-primary px-6 py-2.5 rounded-lg font-mono text-sm w-full">
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    {t(lang, "evaluating")}
+                  </span>
+                ) : (lang === "es" ? "Evaluar Acción" : "Evaluate Action")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* === PRESETS MODE === Scenarios */}
+      {mode === "presets" && (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {SCENARIOS_DATA.map((scenario, i) => {
           const style = SCENARIO_STYLES[i];
@@ -222,6 +426,7 @@ export default function AgentGuard({ onAnalysis, lang = "es", addToHistory }) {
           );
         })}
       </div>
+      )}
 
       {/* Loading — Shield scan */}
       {loading && <ShieldScanOverlay lang={lang} />}

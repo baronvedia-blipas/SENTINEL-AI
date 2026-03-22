@@ -4,6 +4,7 @@ import TxAnalyzer from "./components/TxAnalyzer.jsx";
 import AgentGuard from "./components/AgentGuard.jsx";
 import AuditLog from "./components/AuditLog.jsx";
 import ApiDocs from "./components/ApiDocs.jsx";
+import GuidedDemo from "./components/GuidedDemo.jsx";
 import LandingPage from "./components/LandingPage.jsx";
 import useWallet from "./hooks/useWallet.js";
 import { t } from "./i18n.js";
@@ -13,6 +14,7 @@ const API = "/api";
 const AGENT_ADDRESS = "0x567FCdC8e7148a60b91F3367D09EB1b23aF413aC";
 
 const TAB_KEYS = [
+  { id: "demo", key: "guidedDemo", icon: "▶" },
   { id: "contract", key: "contractAnalyzer", icon: "◆" },
   { id: "transaction", key: "txAnalyzer", icon: "◇" },
   { id: "agent", key: "agentGuard", icon: "■" },
@@ -22,7 +24,7 @@ const TAB_KEYS = [
 
 export default function App() {
   const [showLanding, setShowLanding] = useState(true);
-  const [activeTab, setActiveTab] = useState("contract");
+  const [activeTab, setActiveTab] = useState("demo");
   const [agentInfo, setAgentInfo] = useState(null);
   const [reputation, setReputation] = useState(null);
   const [health, setHealth] = useState(null);
@@ -201,6 +203,7 @@ export default function App() {
       {/* Content */}
       <main className="relative z-10 flex-1 px-3 sm:px-6 py-5 sm:py-8">
         <div className="max-w-7xl mx-auto animate-slideUp">
+          {activeTab === "demo" && <GuidedDemo lang={lang} onAnalysis={refreshAll} />}
           {activeTab === "contract" && <ContractAnalyzer onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}
           {activeTab === "transaction" && <TxAnalyzer onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}
           {activeTab === "agent" && <AgentGuard onAnalysis={refreshAll} lang={lang} addToHistory={addToHistory} />}

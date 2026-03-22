@@ -18,6 +18,7 @@ const translations = {
     agentIdentity: "Identidad del Agente",
     auditLog: "Registro de Auditoría",
     apiDocs: "API",
+    guidedDemo: "Demo",
 
     // Contract Analyzer
     contractTitle: "Analizador de Smart Contracts",
@@ -163,6 +164,7 @@ const translations = {
     agentIdentity: "Agent Identity",
     auditLog: "Audit Log",
     apiDocs: "API",
+    guidedDemo: "Demo",
 
     contractTitle: "Smart Contract Analyzer",
     contractDesc: "Paste Solidity code to detect reentrancy, unlimited approvals, tx.origin abuse, and more.",
