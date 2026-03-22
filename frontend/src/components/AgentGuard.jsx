@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { t } from "../i18n.js";
 
-const SCENARIOS = [
+const SCENARIOS_DATA = [
   {
-    label: "Deploy Vulnerable Contract",
+    labelEs: "Deployar Contrato Vulnerable",
+    labelEn: "Deploy Vulnerable Contract",
     action: {
       actionType: "deploy_contract",
       payload: {
@@ -20,7 +21,8 @@ contract Unsafe {
     },
   },
   {
-    label: "Unlimited Token Approve",
+    labelEs: "Aprobación Ilimitada de Tokens",
+    labelEn: "Unlimited Token Approve",
     action: {
       actionType: "approve",
       payload: {
@@ -31,7 +33,8 @@ contract Unsafe {
     },
   },
   {
-    label: "Safe Transfer (10 USDC)",
+    labelEs: "Transferencia Segura (10 USDC)",
+    labelEn: "Safe Transfer (10 USDC)",
     action: {
       actionType: "transfer",
       payload: {
@@ -98,7 +101,7 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
 
       {/* Scenarios */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {SCENARIOS.map((scenario, i) => (
+        {SCENARIOS_DATA.map((scenario, i) => (
           <button
             key={i}
             onClick={() => evaluate(scenario)}
@@ -154,7 +157,7 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
             </h3>
             <p className="text-sm text-[var(--text-secondary)] mt-2">{result.reason}</p>
             <span className={`inline-block mt-3 px-3 py-1 rounded-lg text-sm font-medium risk-${result.riskLevel.toLowerCase()}`}>
-              Risk: {result.riskLevel}
+              {t(lang, "risk")}: {result.riskLevel}
             </span>
           </div>
 

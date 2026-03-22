@@ -94,7 +94,11 @@ export default function AuditLog({ lang = "es" }) {
                   <span className="px-2 py-0.5 rounded text-xs bg-green-500/15 text-green-400 border border-green-500/20">{t(lang, "active")}</span>
                 )}
               </div>
-              <p className="text-sm text-[var(--text-secondary)] max-w-xl">{agentInfo.description}</p>
+              <p className="text-sm text-[var(--text-secondary)] max-w-xl">
+                {lang === "es"
+                  ? "Agente de seguridad autónomo que analiza smart contracts y transacciones antes de su ejecución, bloquea acciones riesgosas y construye reputación on-chain."
+                  : agentInfo.description}
+              </p>
               <div className="flex gap-2 mt-3">
                 {agentInfo.capabilities?.map((cap, i) => (
                   <span key={i} className="px-2 py-1 rounded text-xs bg-blue-500/10 text-blue-300 border border-blue-500/20">{cap}</span>
@@ -105,21 +109,21 @@ export default function AuditLog({ lang = "es" }) {
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-2xl font-bold text-green-400">{reputation.score}</div>
-                  <div className="text-[10px] text-[var(--text-secondary)]">SCORE</div>
+                  <div className="text-[10px] text-[var(--text-secondary)]">{lang === "es" ? "PUNTAJE" : "SCORE"}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-red-400">{reputation.blockedThreats}</div>
-                  <div className="text-[10px] text-[var(--text-secondary)]">BLOCKED</div>
+                  <div className="text-[10px] text-[var(--text-secondary)]">{lang === "es" ? "BLOQUEADOS" : "BLOCKED"}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-blue-400">{reputation.allowedSafe}</div>
-                  <div className="text-[10px] text-[var(--text-secondary)]">ALLOWED</div>
+                  <div className="text-[10px] text-[var(--text-secondary)]">{lang === "es" ? "PERMITIDOS" : "ALLOWED"}</div>
                 </div>
               </div>
             )}
           </div>
           <div className="mt-3 pt-3 border-t border-[var(--border-color)] text-xs font-mono text-[var(--text-secondary)]">
-            Agent: {agentInfo.address}
+            {lang === "es" ? "Agente" : "Agent"}: {agentInfo.address}
           </div>
         </div>
       )}

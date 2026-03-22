@@ -37,14 +37,18 @@ export default function AgentProfile({ lang = "es" }) {
               <h2 className="text-2xl font-bold">{agent?.name || "Sentinel AI"}</h2>
               {agent?.active && (
                 <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-green-500/15 text-green-400 border border-green-500/20">
-                  ACTIVE
+                  {t(lang, "profileActive")}
                 </span>
               )}
               <span className="px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-500/15 text-blue-400 border border-blue-500/20">
                 ERC-8004
               </span>
             </div>
-            <p className="text-sm text-[var(--text-secondary)] max-w-xl">{agent?.description}</p>
+            <p className="text-sm text-[var(--text-secondary)] max-w-xl">
+              {lang === "es"
+                ? "Agente de seguridad autónomo que analiza smart contracts y transacciones antes de su ejecución, bloquea acciones riesgosas y construye reputación on-chain."
+                : agent?.description}
+            </p>
 
             {/* Capabilities */}
             <div className="flex gap-2 mt-3">
