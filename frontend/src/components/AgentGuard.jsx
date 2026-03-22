@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { t } from "../i18n.js";
+import X402Tooltip from "./X402Tooltip.jsx";
 
 const SCENARIOS_DATA = [
   {
@@ -287,12 +288,27 @@ export default function AgentGuard({ onAnalysis, lang = "es" }) {
               </p>
             </div>
           )}
+
+          {/* EncryptedERC */}
+          <div className="p-4 rounded-xl bg-purple-500/8 border border-purple-500/20 animate-slideUp" style={{ animationDelay: "0.35s" }}>
+            <h3 className="font-semibold text-sm mb-2 text-purple-300 flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+              EncryptedERC
+            </h3>
+            <div className="space-y-1 text-xs font-mono text-[var(--text-secondary)]">
+              <p>{lang === "es" ? "Algoritmo" : "Algorithm"}: <span className="text-purple-300">AES-256-GCM</span></p>
+              <p>{lang === "es" ? "Estado" : "Status"}: <span className="text-[var(--accent)]">{lang === "es" ? "Reporte encriptado on-chain" : "Report encrypted on-chain"}</span></p>
+            </div>
+          </div>
+
+          {/* Payment */}
+          <X402Tooltip cost="0.001" lang={lang} />
         </div>
       )}
 
       {result?.error && (
         <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm animate-slideUp">
-          Error: {result.error}
+          {t(lang, "error")}: {result.error}
         </div>
       )}
     </div>

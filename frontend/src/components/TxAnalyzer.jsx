@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { t } from "../i18n.js";
+import X402Tooltip from "./X402Tooltip.jsx";
 
 const PRESETS = [
   {
@@ -212,6 +213,32 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
 
       {/* Right: Results */}
       <div className="space-y-4">
+        {/* Scanning animation */}
+        {loading && (
+          <div className="p-5 rounded-xl glass-card border-[var(--accent-border)] relative overflow-hidden shield-scan">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-80"
+              style={{ animation: "scanDown 1.5s ease-in-out infinite" }} />
+            <div className="space-y-2.5 font-mono text-xs">
+              <div className="text-[var(--accent)] flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] pulse-dot" />
+                [SENTINEL] {lang === "es" ? "Analizando transacción..." : "Analyzing transaction..."}
+              </div>
+              <div className="text-[var(--text-secondary)]" style={{ animation: "fadeIn 0.5s 0.3s both" }}>
+                <span className="text-[var(--red)] mr-1">&#9656;</span>
+                [SCAN] {lang === "es" ? "Verificando monto y tipo..." : "Checking amount and type..."}
+              </div>
+              <div className="text-[var(--text-secondary)]" style={{ animation: "fadeIn 0.5s 0.8s both" }}>
+                <span className="text-[var(--yellow)] mr-1">&#9656;</span>
+                [SCAN] {lang === "es" ? "Validando contrato destino..." : "Validating target contract..."}
+              </div>
+              <div className="text-[var(--accent)]" style={{ animation: "fadeIn 0.5s 1.3s both" }}>
+                <span className="mr-1">&#9656;</span>
+                [AI] {lang === "es" ? "Generando explicación..." : "Generating explanation..."}
+              </div>
+            </div>
+          </div>
+        )}
+
         {result?.error && (
           <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm animate-slideUp">
             {t(lang, "error")}: {result.error}
@@ -278,6 +305,21 @@ export default function TxAnalyzer({ onAnalysis, lang = "es" }) {
                 </a>
               </div>
             )}
+
+            {/* EncryptedERC */}
+            <div className="p-4 rounded-xl bg-purple-500/8 border border-purple-500/20">
+              <h3 className="font-semibold text-sm mb-2 text-purple-300 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                EncryptedERC
+              </h3>
+              <div className="space-y-1 text-xs font-mono text-[var(--text-secondary)]">
+                <p>{lang === "es" ? "Algoritmo" : "Algorithm"}: <span className="text-purple-300">AES-256-GCM</span></p>
+                <p>{lang === "es" ? "Estado" : "Status"}: <span className="text-[var(--accent)]">{lang === "es" ? "Encriptado en blockchain" : "Encrypted on blockchain"}</span></p>
+              </div>
+            </div>
+
+            {/* Payment */}
+            <X402Tooltip cost="0.0005" lang={lang} />
           </div>
         )}
 
