@@ -148,10 +148,10 @@ contract SafeVault {
 // Simple line number gutter for IDE feel
 function LineNumbers({ code }) {
   const lines = (code || "").split("\n").length;
+  const displayLines = Math.max(lines, 10);
   return (
-    <div className="select-none text-right pr-3 pt-4 pb-4 text-[var(--text-secondary)] opacity-30 font-mono text-xs leading-[1.7] border-r border-[var(--border-color)] min-w-[40px]"
-      style={{ counterReset: "line" }}>
-      {Array.from({ length: Math.max(lines, 15) }, (_, i) => (
+    <div className="select-none text-right pr-3 pt-4 pb-4 text-[var(--text-secondary)] opacity-30 font-mono text-xs leading-[1.7] border-r border-[var(--border-color)] min-w-[40px] flex-shrink-0">
+      {Array.from({ length: displayLines }, (_, i) => (
         <div key={i}>{i + 1}</div>
       ))}
     </div>
@@ -230,14 +230,20 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es", addToHistory
             <span className="text-[10px] font-mono text-[var(--text-secondary)] ml-auto opacity-50">Solidity</span>
           </div>
           {/* Editor area */}
-          <div className="flex bg-[#060a0e]">
+          <div className="flex bg-[#060a0e] min-h-[200px]">
             <LineNumbers code={sourceCode} />
             <textarea
               value={sourceCode}
-              onChange={(e) => setSourceCode(e.target.value)}
+              onChange={(e) => {
+                setSourceCode(e.target.value);
+                // Auto-resize textarea
+                e.target.style.height = "auto";
+                e.target.style.height = Math.max(200, e.target.scrollHeight) + "px";
+              }}
               placeholder={t(lang, "pasteCode")}
-              className="ide-textarea flex-1 p-4 h-80 w-full"
+              className="ide-textarea flex-1 p-4 min-h-[200px] w-full resize-none"
               spellCheck={false}
+              style={{ height: sourceCode ? "auto" : "200px" }}
             />
           </div>
         </div>
