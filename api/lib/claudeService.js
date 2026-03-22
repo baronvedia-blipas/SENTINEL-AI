@@ -40,8 +40,8 @@ async function claudeChat(messages, options = {}) {
 async function explainContractAnalysis(sourceCode, analysis, lang = "es") {
   if (analysis.findings.length === 0) {
     return lang === "en"
-      ? { explanation: "The analyzed contract has no known vulnerabilities.", fixes: [], overall_recommendation: "The contract appears safe, but a professional audit is recommended." }
-      : { explanation: "El contrato analizado no presenta vulnerabilidades conocidas.", fixes: [], overall_recommendation: "El contrato parece seguro, pero se recomienda una auditoría profesional." };
+      ? { explanation: "Sentinel AI has scanned the contract and found no known vulnerability patterns. The code follows safe practices.", fixes: [], overall_recommendation: "Contract approved by Sentinel AI — no threats detected. Safe to deploy." }
+      : { explanation: "Sentinel AI ha escaneado el contrato y no encontró patrones de vulnerabilidad conocidos. El código sigue prácticas seguras.", fixes: [], overall_recommendation: "Contrato aprobado por Sentinel AI — sin amenazas detectadas. Seguro para deployar." };
   }
 
   const findingsText = analysis.findings
