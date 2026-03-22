@@ -231,6 +231,26 @@ export default function ContractAnalyzer({ onAnalysis, lang = "es" }) {
 
       {/* Right: Results */}
       <div className="space-y-4">
+        {/* Scanning animation */}
+        {loading && (
+          <div className="p-4 rounded-lg bg-[#080c10] border border-[var(--accent-border)] relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-80"
+              style={{ animation: "scanDown 1.5s ease-in-out infinite" }} />
+            <div className="space-y-2 font-mono text-xs">
+              <div className="text-[var(--accent)]">[SENTINEL] {lang === "es" ? "Iniciando análisis..." : "Starting analysis..."}</div>
+              <div className="text-[var(--text-secondary)]" style={{ animation: "fadeIn 0.5s 0.3s both" }}>[SCAN] {lang === "es" ? "Buscando patrones de reentrancy..." : "Scanning for reentrancy patterns..."}</div>
+              <div className="text-[var(--text-secondary)]" style={{ animation: "fadeIn 0.5s 0.8s both" }}>[SCAN] {lang === "es" ? "Verificando approvals..." : "Checking approvals..."}</div>
+              <div className="text-[var(--text-secondary)]" style={{ animation: "fadeIn 0.5s 1.3s both" }}>[SCAN] {lang === "es" ? "Analizando autenticación..." : "Analyzing authentication..."}</div>
+              <div className="text-[var(--yellow)]" style={{ animation: "fadeIn 0.5s 1.8s both" }}>[AI] {lang === "es" ? "Generando explicación..." : "Generating explanation..."}</div>
+              <div className="text-[var(--accent)]" style={{ animation: "fadeIn 0.5s 2.3s both" }}>[x402] {lang === "es" ? "Verificando pago..." : "Verifying payment..."}</div>
+            </div>
+            <style>{`
+              @keyframes scanDown { 0%,100% { transform: translateY(0); } 50% { transform: translateY(100px); } }
+              @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+            `}</style>
+          </div>
+        )}
+
         {error && (
           <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
             {t(lang, "error")}: {error}
